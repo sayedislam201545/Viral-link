@@ -21,7 +21,7 @@
     body.dark-theme { background-color: #1B2631; color: #FDFEFE; --surface: #283747; --border: #566573; --shadow: 0 8px 20px rgba(0,0,0,0.2); }
     #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; display: none; overflow-x: hidden; }
     
-    /* ========== PREMIUM LOADING SCREEN (BLUR IMAGE + 10-12 SEC) ========== */
+    /* ========== LOADING SCREEN ========== */
     #loadingScreen {
       position: fixed;
       width: 100%;
@@ -35,9 +35,9 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=500') center/cover no-repeat;
-      filter: blur(12px);
-      opacity: 0.4;
+      background: url('https://i.postimg.cc/DzdZFny0/monetag-case-study-youtube-smartlink.png') center/cover no-repeat;
+      filter: blur(14px);
+      opacity: 0.5;
     }
     .circle {
       width: 160px;
@@ -67,7 +67,7 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* ========== PREMIUM POPUP SYSTEM (SMALL BOX - GLASS EFFECT) ========== */
+    /* ========== POPUP - FIXED POSITION ========== */
     .popup {
       position: fixed;
       top: 25%;
@@ -80,7 +80,7 @@
       padding: 16px;
       text-align: center;
       box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      z-index: 9999;
+      z-index: 99999;
     }
     body.dark-theme .popup {
       background: rgba(30, 41, 59, 0.95);
@@ -295,10 +295,28 @@
     .referral-stat .value { font-size: 1.3rem; font-weight: 700; }
     .referral-stat .label { font-size: 0.7rem; opacity: 0.8; }
     
-    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-    .stat-card { padding: 15px; border-radius: 20px; text-align: center; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
-    .stat-card h4 { font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; }
-    .stat-card p { font-size: 1.3rem; font-weight: 700; color: #E74C3C; }
+    /* ========== PROFILE STATS - COMPACT PREMIUM ========== */
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 10px; 
+      margin-bottom: 20px; 
+    }
+    .stat-card { 
+      padding: 10px;
+      border-radius: 14px;
+      text-align: center; 
+      background: var(--surface); 
+      border: 1px solid var(--border); 
+      box-shadow: var(--shadow); 
+      font-size: 12px;
+    }
+    .stat-card b {
+      font-size: 16px;
+      display: block;
+      margin-top: 4px;
+      color: #E74C3C;
+    }
     
     .action-btn {
       padding: 10px 22px; background: linear-gradient(45deg, #E74C3C, #F39C12); border: none;
@@ -313,14 +331,14 @@
       display: flex; justify-content: space-around; align-items: center; height: 75px;
       background: #1a1a1a; color: white; z-index: 1000;
       border-top: 1px solid rgba(255,255,255,0.1);
-      border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 0 5px;
+      border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 0 3px;
     }
     .nav-btn {
       background: none; border: none; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; font-family: inherit; font-size: 0.7rem;
+      align-items: center; justify-content: center; font-family: inherit; font-size: 0.6rem;
       color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; flex: 1; height: 100%; gap: 4px;
     }
-    .nav-btn i { font-size: 1.4rem; }
+    .nav-btn i { font-size: 1.3rem; }
     .nav-btn.active { color: #F39C12; }
     .home-nav-btn .home-icon-wrapper {
       width: 54px; height: 54px; background: linear-gradient(135deg, #E74C3C, #F39C12);
@@ -362,13 +380,22 @@
     .method-card-item:active { transform: scale(0.96); }
     .method-card-item img { width: 70px; height: 70px; object-fit: contain; border-radius: 16px; margin-bottom: 5px; }
     
+    /* ========== WITHDRAW HISTORY - PREMIUM UI ========== */
     .history-item-premium {
-      background: var(--surface); border-radius: 24px; padding: 16px; margin-bottom: 12px;
-      border: 1px solid var(--border); box-shadow: var(--shadow); border-left: 5px solid;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg,#1e293b,#334155);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
-    .history-item-premium.completed { border-left-color: #10B981; }
-    .history-item-premium.pending { border-left-color: #F59E0B; }
-    .history-item-premium.rejected { border-left-color: #EF4444; }
+    body.light-theme .history-item-premium {
+      background: linear-gradient(135deg,#f8fafc,#e2e8f0);
+      color: #1e293b;
+    }
+    .history-item-premium.completed { border-left: 4px solid #22c55e; }
+    .history-item-premium.pending { border-left: 4px solid #f59e0b; }
+    .history-item-premium.rejected { border-left: 4px solid #ef4444; }
     
     .withdraw-form-group { margin-bottom: 18px; }
     .withdraw-form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; }
@@ -382,7 +409,7 @@
 </head>
 <body>
 
-<!-- ========== PREMIUM LOADING SCREEN (BLUR IMAGE + 10-12 SEC) ========== -->
+<!-- ========== LOADING SCREEN ========== -->
 <div id="loadingScreen">
   <div class="loading-bg"></div>
   <div class="circle">
@@ -392,7 +419,7 @@
   </div>
 </div>
 
-<!-- ========== PREMIUM POPUP SYSTEM (SMALL BOX) ========== -->
+<!-- ========== POPUP ========== -->
 <div id="popupBox" class="popup hidden">
   <h3 id="popupTitle">Notice</h3>
   <img id="popupUserPhoto" src="https://via.placeholder.com/60" style="display:none;">
@@ -436,6 +463,12 @@
       <div id="web-tasks-container"></div>
     </div>
     
+    <!-- LEADERBOARD PAGE -->
+    <div id="leaderboard-page" class="page">
+      <h3 style="margin-bottom:16px;"><i class="fas fa-trophy" style="color:#F39C12;"></i> Top Users</h3>
+      <div id="leaderboard-list"></div>
+    </div>
+    
     <div id="profile-page" class="page">
       <div class="profile-premium-card">
         <img id="profile-photo-large" class="profile-premium-avatar" src="https://via.placeholder.com/110">
@@ -448,16 +481,17 @@
       </div>
       <div id="referral-section"></div>
       <div class="stats-grid">
-        <div class="stat-card"><h4>Total Referrals</h4><p id="referral-count">0</p></div>
-        <div class="stat-card"><h4>Total Earned</h4><p id="total-earned">0</p></div>
-        <div class="stat-card"><h4>Total Ads</h4><p id="total-ads-watched">0</p></div>
-        <div class="stat-card"><h4>Web Tasks Done</h4><p id="web-tasks-done">0</p></div>
+        <div class="stat-card">Total Earned<br><b id="total-earned">0</b></div>
+        <div class="stat-card">Web Tasks<br><b id="web-tasks-done">0</b></div>
+        <div class="stat-card">Total Ads<br><b id="total-ads-watched">0</b></div>
+        <div class="stat-card">Referrals<br><b id="referral-count">0</b></div>
       </div>
     </div>
   </main>
   
   <nav class="bottom-nav">
     <button class="nav-btn" data-page="web-task-page"><i class="fas fa-globe"></i><span>Web Tasks</span></button>
+    <button class="nav-btn" data-page="leaderboard-page"><i class="fas fa-trophy"></i><span>Leaderboard</span></button>
     <button class="nav-btn active home-nav-btn" data-page="home-page"><div class="home-icon-wrapper"><i class="fas fa-home"></i></div><span>Home</span></button>
     <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
   </nav>
@@ -498,7 +532,7 @@
   function showModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'flex'; }
   function hideModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'none'; }
   
-  // ========== PREMIUM POPUP SYSTEM ==========
+  // ========== POPUP SYSTEM ==========
   function showPopup(title, message, options = {}) {
     const popup = document.getElementById('popupBox');
     const titleEl = document.getElementById('popupTitle');
@@ -714,18 +748,13 @@
     
     let success = false;
     try {
-      // FIX: Monetag = 2 Ads Back-to-Back
+      // FIX: Monetag - Single ad (NO GIGAPUB MIX)
       if (platform === 'monetag') {
-        await runMonetagAd();
-        await runMonetagAd();
-        success = true;
+        success = await runMonetagAd();
       }
-      // FIX: Gigapub = 4 Ads
+      // FIX: Gigapub - Single ad (NO MONETAG MIX)
       else if (platform === 'gigapub') {
-        for(let i = 0; i < 4; i++) {
-          await runGigapubAd();
-        }
-        success = true;
+        success = await runGigapubAd();
       }
       else { success = true; }
     } catch(e) { console.warn(e); }
@@ -1035,7 +1064,7 @@
     };
   }
   
-  // ========== REFERRAL SYSTEM (FIXED) ==========
+  // ========== REFERRAL SYSTEM ==========
   function getRefLink(userId) {
     return `https://t.me/video_group_link_bot?start=${userId}`;
   }
@@ -1104,7 +1133,35 @@
     showPopup('Success!', `${amount} Coins moved to main balance!`);
   }
   
-  // ========== WITHDRAW HISTORY FIX ==========
+  // ========== LEADERBOARD ==========
+  async function loadLeaderboard(){
+    let container = document.getElementById("leaderboard-list");
+    if(!container) return;
+    
+    let snap = await db.ref("users").once("value");
+    let users = snap.val() || {};
+
+    let list = Object.values(users);
+
+    list.sort((a,b)=>(b.referrals||0)-(a.referrals||0));
+
+    let top = list.slice(0,10);
+
+    container.innerHTML = top.map((u,i)=>`
+      <div class="history-item-premium" style="border-left: 4px solid ${i === 0 ? '#F39C12' : (i === 1 ? '#94A3B8' : (i === 2 ? '#CD7F32' : '#64748B'))};">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.5rem; font-weight:700; min-width:40px;">#${i+1}</span>
+          <img src="${u.photoUrl || 'https://via.placeholder.com/40'}" style="width:40px;height:40px;border-radius:50%;">
+          <div>
+            <b>${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</b><br>
+            <span style="font-size:0.8rem;">Referrals: ${u.referrals || 0} | Earned: ${(u.totalEarned || 0).toFixed(0)} Coins</span>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+  
+  // ========== WITHDRAW HISTORY ==========
   async function loadWithdrawHistory(){
     let container = document.getElementById("wallet-modal-body");
     if(!container) return;
@@ -1222,7 +1279,6 @@
     appConfig = configSnap.val() || {};
     appConfig.adminChatId = appConfig.adminChatId || '8705098472';
     
-    // FIX: BOT TOKEN + USERNAME
     appConfig.botToken = "8261541105:AAE2NTxatnJMLlD1hOTEreIrZfzKivoTx6E";
     appConfig.botUsername = "video_group_link_bot";
     
@@ -1234,7 +1290,7 @@
     renderAll();
     renderWebTasksPage();
     
-    // Premium Loading Animation (10-12 sec smooth)
+    // Loading Animation
     let p = 0;
     const percentEl = document.getElementById('percent');
     const loadingScreen = document.getElementById('loadingScreen');
@@ -1247,14 +1303,19 @@
         clearInterval(loadInterval);
         loadingScreen.style.display = 'none';
         document.getElementById('app').style.display = 'block';
+        
+        // Entry Popup
+        setTimeout(() => {
+          showPopup("Notice", "Welcome to the app!");
+        }, 500);
       }
-    }, 120);
+    }, 110);
     
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
       setTimeout(() => {
         showPopup(sitePopup.title || 'Welcome', sitePopup.description || '', { showUser: false });
-      }, 500);
+      }, 1000);
     }
   }
   
@@ -1271,6 +1332,7 @@
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (pageId === 'web-task-page') renderWebTasksPage();
+      else if (pageId === 'leaderboard-page') loadLeaderboard();
       else if (pageId === 'home-page') { renderAdPlatformTabs(); renderPremiumAdCard(); renderDailyCheckIn(); }
       else if (pageId === 'profile-page') renderReferralSection();
     });
