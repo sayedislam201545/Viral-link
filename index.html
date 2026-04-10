@@ -20,6 +20,61 @@
     body.light-theme { background-color: #F8F9FA; color: #2C3E50; --surface: #FFFFFF; --border: #E9ECEF; --shadow: 0 8px 20px rgba(0,0,0,0.05); }
     body.dark-theme { background-color: #1B2631; color: #FDFEFE; --surface: #283747; --border: #566573; --shadow: 0 8px 20px rgba(0,0,0,0.2); }
     #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; display: none; overflow-x: hidden; }
+    
+    /* ========== PREMIUM LOADING SCREEN ========== */
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .loader-container {
+      text-align: center;
+    }
+    .progress-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 8px solid rgba(255,255,255,0.1);
+      border-top: 8px solid #38bdf8;
+      animation: spin 1s linear infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 0 30px rgba(56,189,248,0.6);
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      color: #94a3b8;
+      font-size: 1rem;
+      margin-top: 20px;
+      letter-spacing: 2px;
+    }
+    .loading-logo {
+      color: #38bdf8;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-shadow: 0 0 20px rgba(56,189,248,0.5);
+    }
+    .loading-logo i {
+      color: #F39C12;
+      margin-right: 8px;
+    }
+    
     .top-bar {
       position: sticky; top: 0; z-index: 1000;
       display: flex; align-items: center; justify-content: space-between;
@@ -94,7 +149,8 @@
     .ad-progress-bar { margin-top: 16px; height: 6px; background: #E2E8F0; border-radius: 10px; overflow: hidden; }
     .ad-progress-fill { height: 100%; background: linear-gradient(90deg, #E74C3C, #F39C12); border-radius: 10px; transition: width 0.3s; }
     
-    .bonus-task-card {
+    /* Web Task Card */
+    .web-task-card {
       background: var(--surface);
       border-radius: 24px;
       padding: 20px 18px;
@@ -104,47 +160,47 @@
       position: relative;
       overflow: hidden;
     }
-    .bonus-task-card::before {
+    .web-task-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 4px;
       background: linear-gradient(90deg, #E74C3C, #F39C12);
     }
-    .bonus-task-header {
+    .web-task-header {
       display: flex;
       align-items: center;
       gap: 16px;
       margin-bottom: 16px;
     }
-    .bonus-task-header img {
+    .web-task-header img {
       width: 60px;
       height: 60px;
       border-radius: 18px;
       object-fit: cover;
       border: 2px solid var(--primary);
     }
-    .bonus-task-title { flex: 1; }
-    .bonus-task-title h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
-    .bonus-task-title p {
+    .web-task-title { flex: 1; }
+    .web-task-title h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .web-task-title p {
       font-size: 0.8rem; opacity: 0.7; display: -webkit-box;
       -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .bonus-task-reward-badge {
+    .web-task-reward-badge {
       background: linear-gradient(135deg, #E74C3C20, #F39C1220); padding: 6px 14px; border-radius: 30px;
       font-size: 0.9rem; font-weight: 700; color: #E74C3C; display: inline-block; margin-bottom: 16px;
     }
-    .bonus-task-stats {
+    .web-task-stats {
       display: flex; gap: 16px; margin-bottom: 16px; font-size: 0.75rem; opacity: 0.7;
     }
-    .bonus-task-stats i { margin-right: 4px; color: var(--primary); }
-    .bonus-task-btn {
+    .web-task-stats i { margin-right: 4px; color: var(--primary); }
+    .web-task-btn {
       width: 100%; padding: 14px; background: linear-gradient(135deg, #E74C3C, #F39C12); border: none;
       border-radius: 40px; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer;
       transition: all 0.2s; box-shadow: 0 4px 12px rgba(231,76,60,0.3); min-height: 50px;
     }
-    .bonus-task-btn:active { transform: scale(0.97); }
-    .bonus-task-btn:disabled { opacity: 0.6; cursor: not-allowed; background: #94A3B8; box-shadow: none; }
+    .web-task-btn:active { transform: scale(0.97); }
+    .web-task-btn:disabled { opacity: 0.6; cursor: not-allowed; background: #94A3B8; box-shadow: none; }
     
     .profile-premium-card {
       background: linear-gradient(145deg, var(--surface), var(--surface));
@@ -245,11 +301,6 @@
       100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
     }
     
-    .loader-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: #FDFEFE; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    body.dark-theme .loader-screen { background: #1B2631; }
-    .spinner { width: 50px; height: 50px; border: 4px solid #E74C3C20; border-top: 4px solid #E74C3C; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; }
     .modal-container { background: var(--surface); border-radius: 32px; width: 90%; max-width: 400px; max-height: 85vh; overflow-y: auto; padding: 20px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -276,10 +327,86 @@
       background: #FEF2F2; border: 2px solid #EF4444; border-radius: 24px; padding: 30px 20px; text-align: center; margin: 20px 0;
     }
     .device-blocked-message i { font-size: 3rem; color: #EF4444; margin-bottom: 16px; }
+    
+    /* Custom Popup Modal */
+    .custom-popup-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+    .custom-popup {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-radius: 32px;
+      padding: 30px 24px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      border: 1px solid rgba(56,189,248,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .custom-popup i {
+      font-size: 3.5rem;
+      color: #38bdf8;
+      margin-bottom: 16px;
+    }
+    .custom-popup h3 {
+      color: white;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+    .custom-popup p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .custom-popup .highlight {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .custom-popup .warning {
+      color: #F59E0B;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .custom-popup-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 24px;
+    }
+    .custom-popup-btn.cancel {
+      background: rgba(255,255,255,0.1);
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
-<div id="loader-screen" class="loader-screen"><div class="spinner"></div><p id="loading-text">Loading Earnify...</p></div>
+
+<!-- ========== PREMIUM LOADING SCREEN ========== -->
+<div id="loadingScreen">
+  <div class="loader-container">
+    <div class="loading-logo">
+      <i class="fas fa-crown"></i> Earnify
+    </div>
+    <div class="progress-circle">
+      <span id="percent">0%</span>
+    </div>
+    <div class="loading-text">লোড হচ্ছে...</div>
+  </div>
+</div>
+
 <div id="app">
   <div class="top-bar">
     <div class="top-left">
@@ -306,10 +433,11 @@
       <div id="pending-withdraw-banner-container"></div>
     </div>
     
-    <div id="bonus-tasks-page" class="page">
-      <h3 style="margin-bottom:16px;"><i class="fas fa-gift" style="color:#E74C3C;"></i> Bonus Tasks</h3>
-      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">Complete tasks to earn extra coins!</p>
-      <div id="bonus-tasks-container"></div>
+    <!-- WEB TASK PAGE (Renamed from Bonus Tasks) -->
+    <div id="web-task-page" class="page">
+      <h3 style="margin-bottom:16px;"><i class="fas fa-globe" style="color:#E74C3C;"></i> Web Tasks</h3>
+      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">ওয়েব টাস্ক সম্পন্ন করে কয়েন অর্জন করুন!</p>
+      <div id="web-tasks-container"></div>
     </div>
     
     <div id="profile-page" class="page">
@@ -327,16 +455,21 @@
         <div class="stat-card"><h4>Total Referrals</h4><p id="referral-count">0</p></div>
         <div class="stat-card"><h4>Total Earned</h4><p id="total-earned">0</p></div>
         <div class="stat-card"><h4>Total Ads</h4><p id="total-ads-watched">0</p></div>
-        <div class="stat-card"><h4>Tasks Done</h4><p id="bonus-tasks-done">0</p></div>
+        <div class="stat-card"><h4>Web Tasks Done</h4><p id="web-tasks-done">0</p></div>
       </div>
     </div>
   </main>
   
   <nav class="bottom-nav">
-    <button class="nav-btn" data-page="bonus-tasks-page"><i class="fas fa-gift"></i><span>Bonus</span></button>
+    <button class="nav-btn" data-page="web-task-page"><i class="fas fa-globe"></i><span>Web Tasks</span></button>
     <button class="nav-btn active home-nav-btn" data-page="home-page"><div class="home-icon-wrapper"><i class="fas fa-home"></i></div><span>Home</span></button>
     <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
   </nav>
+</div>
+
+<!-- CUSTOM POPUP OVERLAY -->
+<div id="customPopupOverlay" class="custom-popup-overlay" style="display: none;">
+  <div class="custom-popup" id="customPopupContent"></div>
 </div>
 
 <div id="wallet-modal" class="modal-overlay">
@@ -366,19 +499,25 @@
   let adStartTime = {};
   let selectedAdPlatform = 'monetag';
   
-  // Timer tracking for bonus tasks with exit detection
-  let bonusTaskStartTime = null;
-  let currentBonusTaskKey = null;
-  let currentBonusTaskTime = 30;
-  let currentBonusTaskReward = 0;
-  let currentBonusTaskName = '';
-  let hasCompletedTimer = false;
-  let timerCheckInterval = null;
+  // Web Task Timer System
+  let taskStartTime = 0;
+  let currentTask = null;
+  let taskCheckInterval = null;
   
   function formatTime(sec){ let m = Math.floor(sec/60), s = sec%60; return `${m}:${s<10?'0':''}${s}`; }
   function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   function showModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'flex'; }
   function hideModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'none'; }
+  
+  // Custom Popup Functions
+  function showCustomPopup(content) {
+    document.getElementById('customPopupContent').innerHTML = content;
+    document.getElementById('customPopupOverlay').style.display = 'flex';
+  }
+  
+  function hideCustomPopup() {
+    document.getElementById('customPopupOverlay').style.display = 'none';
+  }
   
   function showAlert(msg, cb){ 
     let body = document.getElementById('global-popup-body'); 
@@ -574,8 +713,8 @@
     renderPremiumAdCard();
   }
 
-  // ========== BONUS TASKS WITH STRICT TIMER VALIDATION & EXIT DETECTION ==========
-  async function loadBonusTasks() {
+  // ========== WEB TASK SYSTEM WITH POPUP & TIMER ==========
+  async function loadWebTasks() {
     let snap = await db.ref('config/bonusTasks').once('value');
     let tasksData = snap.val() || {};
     let tasks = [];
@@ -583,90 +722,225 @@
     return tasks;
   }
   
-  // Function to start bonus task timer
-  function startBonusTaskTimer(key, link, taskTime, reward, taskName) {
-    currentBonusTaskKey = key;
-    currentBonusTaskTime = taskTime;
-    currentBonusTaskReward = reward;
-    currentBonusTaskName = taskName;
-    bonusTaskStartTime = Date.now();
-    hasCompletedTimer = false;
+  // STEP 1: START TASK POPUP
+  function startTaskPopup(task) {
+    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
     
-    db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).set({
-        startTime: bonusTaskStartTime,
-        taskName: taskName,
-        taskTime: taskTime,
-        reward: reward
+    const content = `
+      <i class="fas fa-hourglass-start"></i>
+      <h3>⏰ Notification</h3>
+      <p><span class="highlight">${userName}</span></p>
+      <p>আপনি এখন <strong>OK</strong> বাটন ক্লিক করলেই আপনার টাইমার শুরু হয়ে যাবে!</p>
+      <p style="margin-top:16px;"><strong>📋 ${escapeHtml(task.name)}</strong></p>
+      <p>⏱️ নির্ধারিত সময়: <span class="highlight">${task.taskTime || 30} সেকেন্ড</span></p>
+      <p>💰 পুরস্কার: <span class="highlight">${task.reward} কয়েন</span></p>
+      <p class="warning">⚠️ ${task.taskTime || 30} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।</p>
+      <button class="custom-popup-btn" onclick="window.confirmStartTask()">✅ OK, টাইমার শুরু করুন</button>
+      <button class="custom-popup-btn cancel" onclick="window.cancelTaskPopup()">❌ বাতিল</button>
+    `;
+    
+    showCustomPopup(content);
+  }
+  
+  // Store pending task for popup
+  let pendingTask = null;
+  
+  window.startTaskPopup = function(task) {
+    pendingTask = task;
+    startTaskPopup(task);
+  };
+  
+  window.confirmStartTask = function() {
+    hideCustomPopup();
+    if (pendingTask) {
+      startTask(pendingTask);
+      pendingTask = null;
+    }
+  };
+  
+  window.cancelTaskPopup = function() {
+    hideCustomPopup();
+    pendingTask = null;
+  };
+  
+  // STEP 2: START TASK (TIMER START)
+  function startTask(task) {
+    taskStartTime = Date.now();
+    currentTask = task;
+    
+    // Save timer to Firebase
+    db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).set({
+      startTime: taskStartTime,
+      taskName: task.name,
+      taskTime: task.taskTime || 30,
+      reward: task.reward
     });
     
-    if (link) { tg.openLink(link); }
-    
-    showAlert(`⏰ টাইমার শুরু হয়েছে!\n\n📋 ${taskName}\n⏱️ নির্ধারিত সময়: ${taskTime} সেকেন্ড\n💰 পুরস্কার: ${reward} কয়েন\n\n⚠️ ${taskTime} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।`);
-    
-    if (timerCheckInterval) clearInterval(timerCheckInterval);
-    timerCheckInterval = setInterval(() => {
-        if (bonusTaskStartTime && currentBonusTaskKey) {
-            let elapsed = Date.now() - bonusTaskStartTime;
-            if (elapsed >= currentBonusTaskTime * 1000) {
-                hasCompletedTimer = true;
-                clearInterval(timerCheckInterval);
-                timerCheckInterval = null;
-            }
-        }
-    }, 500);
-    
-    renderBonusTasksPage();
-  }
-
-  // Function to handle user returning from external site
-  function handleUserReturn() {
-    if (currentBonusTaskKey && bonusTaskStartTime) {
-        let elapsed = Date.now() - bonusTaskStartTime;
-        let requiredTime = currentBonusTaskTime * 1000;
-        let timeSpent = Math.floor(elapsed / 1000);
-        
-        if (elapsed < requiredTime) {
-            let message = `❌ আপনি ${currentBonusTaskTime} সেকেন্ডের আগে বের হয়েছেন!\n\n`;
-            message += `📋 নির্ধারিত সময়: ${currentBonusTaskTime} সেকেন্ড\n`;
-            message += `⏱️ আপনার অবস্থানকাল: ${timeSpent} সেকেন্ড\n\n`;
-            message += `😔 আপনি কোনো রকম কয়েন পাবেন না।`;
-            
-            showAlert(message);
-            db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentBonusTaskKey}`).remove();
-            currentBonusTaskKey = null;
-            bonusTaskStartTime = null;
-            hasCompletedTimer = false;
-            if (timerCheckInterval) { clearInterval(timerCheckInterval); timerCheckInterval = null; }
-            renderBonusTasksPage();
-        } else {
-            let message = `✅ আপনি ${currentBonusTaskTime} সেকেন্ড সম্পূর্ণ করেছেন!\n\n`;
-            message += `🎁 এখন "Claim Reward" বাটনে ক্লিক করে ${currentBonusTaskReward} কয়েন সংগ্রহ করুন।`;
-            showAlert(message);
-            hasCompletedTimer = true;
-            renderBonusTasksPage();
-        }
+    // Open link in new tab
+    if (task.link) {
+      window.open(task.link, '_blank');
     }
+    
+    renderWebTasksPage();
   }
-
-  // Handle app visibility change (when user returns from external site)
+  
+  // STEP 3: CHECK TASK COMPLETION (when user returns)
+  function checkTaskCompletion() {
+    if (!currentTask) return false;
+    
+    let spent = Math.floor((Date.now() - taskStartTime) / 1000);
+    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
+    const requiredTime = currentTask.taskTime || 30;
+    
+    if (spent < requiredTime) {
+      // FAILED - Not enough time
+      const content = `
+        <i class="fas fa-times-circle" style="color: #EF4444;"></i>
+        <h3 style="color: #EF4444;">❌ টাস্ক অসম্পূর্ণ</h3>
+        <p><span class="highlight">${userName}</span></p>
+        <p>আপনি টাস্ক টি সম্পূর্ণ করতে পারেননি!</p>
+        <p style="margin-top:16px;">📋 নির্ধারিত সময়: <span class="highlight">${requiredTime} সেকেন্ড</span></p>
+        <p>⏱️ আপনি ছিলেন: <span class="highlight">${spent} সেকেন্ড</span></p>
+        <p class="warning">😔 আপনি কোনো কয়েন পাবেন না।</p>
+        <button class="custom-popup-btn" onclick="window.closeTaskFailedPopup()">ঠিক আছে</button>
+      `;
+      
+      showCustomPopup(content);
+      
+      // Remove timer from Firebase
+      db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentTask.key}`).remove();
+      
+      currentTask = null;
+      taskStartTime = 0;
+      renderWebTasksPage();
+      return false;
+    }
+    
+    // SUCCESS - Show success popup with countdown
+    showSuccessPopup(currentTask);
+    return true;
+  }
+  
+  window.closeTaskFailedPopup = function() {
+    hideCustomPopup();
+  };
+  
+  // STEP 4: SUCCESS POPUP + COUNTDOWN
+  function showSuccessPopup(task) {
+    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
+    let countdown = 5;
+    
+    const updatePopup = () => {
+      const content = `
+        <i class="fas fa-check-circle" style="color: #10B981;"></i>
+        <h3 style="color: #10B981;">✅ টাস্ক সম্পূর্ণ!</h3>
+        <p><span class="highlight">${userName}</span></p>
+        <p>আপনি সফল ভাবে টাস্ক টি সম্পূর্ণ করেছেন!</p>
+        <p style="margin-top:16px;">💰 পুরস্কার: <span class="highlight">${task.reward} কয়েন</span></p>
+        <p style="font-size:2rem; font-weight:700; margin:16px 0; color:#38bdf8;">${countdown}</p>
+        <p>সেকেন্ড পরে কয়েন ক্লেইম করতে পারবেন</p>
+        <button class="custom-popup-btn" disabled style="opacity:0.5;">অপেক্ষা করুন...</button>
+      `;
+      showCustomPopup(content);
+    };
+    
+    updatePopup();
+    
+    const interval = setInterval(() => {
+      countdown--;
+      
+      if (countdown > 0) {
+        updatePopup();
+      }
+      
+      if (countdown <= 0) {
+        clearInterval(interval);
+        hideCustomPopup();
+        giveReward(task);
+      }
+    }, 1000);
+  }
+  
+  // STEP 5: GIVE REWARD
+  async function giveReward(task) {
+    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
+    
+    // Save completion
+    let completionKey = db.ref(`users/${tgUser.id}/bonusTaskCompletions`).push().key;
+    await db.ref(`users/${tgUser.id}/bonusTaskCompletions/${completionKey}`).set({
+      taskId: task.key,
+      taskName: task.name,
+      reward: task.reward,
+      timestamp: Date.now()
+    });
+    
+    // Remove timer
+    await db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).remove();
+    
+    // Update user balance
+    userState.earningWallet = (userState.earningWallet || 0) + task.reward;
+    userState.totalEarned = (userState.totalEarned || 0) + task.reward;
+    await db.ref(`users/${tgUser.id}`).update({
+      earningWallet: userState.earningWallet,
+      totalEarned: userState.totalEarned
+    });
+    
+    // Update task completion count
+    await db.ref(`config/bonusTasks/${task.key}/completions`).transaction(v => (v || 0) + 1);
+    
+    await addHistory('Web Task', task.name, task.reward, 'Completed');
+    await processReferralEarnings(tgUser.id, task.reward, 'Web Task');
+    await sendAdminNotification(`✅ Web Task Completed\nUser: ${userName}\nTask: ${task.name}\nReward: ${task.reward} Coins`);
+    
+    // Show final success message
+    const content = `
+      <i class="fas fa-gift" style="color: #F39C12;"></i>
+      <h3>🎉 অভিনন্দন!</h3>
+      <p><span class="highlight">${userName}</span></p>
+      <p>আপনি <strong>${task.reward} কয়েন</strong> পেয়েছেন!</p>
+      <button class="custom-popup-btn" onclick="window.closeSuccessPopup()">🎁 দারুণ!</button>
+    `;
+    showCustomPopup(content);
+    
+    currentTask = null;
+    taskStartTime = 0;
+    
+    renderAll();
+    renderWebTasksPage();
+  }
+  
+  window.closeSuccessPopup = function() {
+    hideCustomPopup();
+  };
+  
+  // Check task when page becomes visible
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') { handleUserReturn(); }
+    if (document.visibilityState === 'visible' && currentTask) {
+      checkTaskCompletion();
+    }
   });
   
-  window.addEventListener('focus', () => { handleUserReturn(); });
+  window.addEventListener('focus', () => {
+    if (currentTask) {
+      checkTaskCompletion();
+    }
+  });
   
-  async function renderBonusTasksPage() {
-    let tasks = await loadBonusTasks();
+  // Check task manually
+  window.checkTaskCompletion = checkTaskCompletion;
+  
+  async function renderWebTasksPage() {
+    let tasks = await loadWebTasks();
     let userCompletionsSnap = await db.ref(`users/${tgUser.id}/bonusTaskCompletions`).once('value');
     let userCompletions = userCompletionsSnap.val() || {};
     let userTimersSnap = await db.ref(`users/${tgUser.id}/bonusTaskTimers`).once('value');
     let userTimers = userTimersSnap.val() || {};
     
-    let container = document.getElementById('bonus-tasks-container');
+    let container = document.getElementById('web-tasks-container');
     if (!container) return;
     
     if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো বোনাস টাস্ক নেই।</p>';
+      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো ওয়েব টাস্ক নেই।</p>';
       return;
     }
     
@@ -674,7 +948,7 @@
     
     let completedCount = 0;
     for (let key in userCompletions) if (userCompletions[key]) completedCount++;
-    document.getElementById('bonus-tasks-done').innerText = completedCount;
+    document.getElementById('web-tasks-done').innerText = completedCount;
     
     let html = '';
     for (let task of tasks) {
@@ -690,10 +964,20 @@
       
       let buttonHtml = '';
       let buttonDisabled = false;
+      let buttonAction = '';
       
-      if (isGloballyLimited) { buttonHtml = '🔒 গ্লোবাল লিমিট শেষ'; buttonDisabled = true; }
-      else if (isUserLimited) { buttonHtml = `✅ লিমিট শেষ (${userCompletionsCount}/${task.userLimit})`; buttonDisabled = true; }
-      else if (isCompleted) { buttonHtml = '✅ সম্পন্ন হয়েছে'; buttonDisabled = true; }
+      if (isGloballyLimited) { 
+        buttonHtml = '🔒 গ্লোবাল লিমিট শেষ'; 
+        buttonDisabled = true; 
+      }
+      else if (isUserLimited) { 
+        buttonHtml = `✅ লিমিট শেষ (${userCompletionsCount}/${task.userLimit})`; 
+        buttonDisabled = true; 
+      }
+      else if (isCompleted) { 
+        buttonHtml = '✅ সম্পন্ন হয়েছে'; 
+        buttonDisabled = true; 
+      }
       else if (timer && timer.startTime) {
         let elapsed = Date.now() - timer.startTime;
         let taskTime = (task.taskTime || timer.taskTime || 30) * 1000;
@@ -702,6 +986,7 @@
         if (elapsed >= taskTime) {
           buttonHtml = `🎁 ${task.reward} কয়েন সংগ্রহ করুন`;
           buttonDisabled = false;
+          buttonAction = `window.checkTaskCompletion()`;
         } else {
           let timeSpent = Math.floor(elapsed / 1000);
           buttonHtml = `⏳ ${timeSpent}/${requiredSeconds}s - অপেক্ষা করুন`;
@@ -713,99 +998,29 @@
       }
       
       html += `
-        <div class="bonus-task-card">
-          <div class="bonus-task-header">
+        <div class="web-task-card">
+          <div class="web-task-header">
             <img src="${task.photoUrl || 'https://via.placeholder.com/60'}" onerror="this.src='https://via.placeholder.com/60'">
-            <div class="bonus-task-title">
+            <div class="web-task-title">
               <h3>${escapeHtml(task.name)}</h3>
               <p>${escapeHtml(task.description || task.title || 'টাস্ক সম্পন্ন করে কয়েন অর্জন করুন')}</p>
             </div>
           </div>
-          <div class="bonus-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
-          <div class="bonus-task-stats">
+          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
+          <div class="web-task-stats">
             <span><i class="fas fa-user"></i> আপনার অগ্রগতি: ${userCompletionsCount}/${task.userLimit || 1}</span>
             <span><i class="fas fa-globe"></i> গ্লোবাল: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
             <span><i class="fas fa-clock"></i> সময়: ${task.taskTime || 30} সেকেন্ড</span>
           </div>
-          <button class="bonus-task-btn ${!buttonDisabled && !timer ? 'bonus-start-btn' : ''} ${!buttonDisabled && timer ? 'bonus-claim-btn' : ''}" 
-            data-key="${task.key}" data-link="${task.link}" data-time="${task.taskTime || 30}" 
-            data-reward="${task.reward}" data-name="${escapeHtml(task.name)}" ${buttonDisabled ? 'disabled' : ''}>${buttonHtml}</button>
+          <button class="web-task-btn" 
+            ${buttonDisabled ? 'disabled' : ''} 
+            onclick="${!buttonDisabled && !timer ? `window.startTaskPopup(${JSON.stringify(task).replace(/"/g, '&quot;')})` : (buttonAction || '')}">
+            ${buttonHtml}
+          </button>
         </div>
       `;
     }
     container.innerHTML = html;
-    
-    // Start task handlers
-    document.querySelectorAll('.bonus-start-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        let key = btn.dataset.key, link = btn.dataset.link, time = parseInt(btn.dataset.time) || 30, reward = parseFloat(btn.dataset.reward) || 0, name = btn.dataset.name || 'Task';
-        if (!link) { showAlert("❌ এই টাস্কের জন্য কোনো লিংক নেই।"); return; }
-        startBonusTaskTimer(key, link, time, reward, name);
-      });
-    });
-    
-    // Claim handlers with STRICT time validation
-    document.querySelectorAll('.bonus-claim-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        let key = btn.dataset.key, reward = parseFloat(btn.dataset.reward) || 0;
-        
-        let timerSnap = await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).once('value');
-        let timer = timerSnap.val();
-        if (!timer || !timer.startTime) { showAlert("❌ টাইমার পাওয়া যায়নি। আবার শুরু করুন।"); renderBonusTasksPage(); return; }
-        
-        let tasks = await loadBonusTasks();
-        let task = tasks.find(t => t.key === key);
-        if (!task) { showAlert("❌ টাস্ক পাওয়া যায়নি।"); return; }
-        
-        let elapsed = Date.now() - timer.startTime;
-        let requiredTime = (task.taskTime || timer.taskTime || 30) * 1000;
-        let timeSpent = Math.floor(elapsed / 1000);
-        let requiredSeconds = task.taskTime || timer.taskTime || 30;
-        
-        if (elapsed < requiredTime) {
-          let message = `❌ আপনি ${requiredSeconds} সেকেন্ডের আগে বের হয়েছেন!\n\n`;
-          message += `📋 নির্ধারিত সময়: ${requiredSeconds} সেকেন্ড\n`;
-          message += `⏱️ আপনার অবস্থানকাল: ${timeSpent} সেকেন্ড\n\n`;
-          message += `😔 আপনি কোনো রকম কয়েন পাবেন না।`;
-          showAlert(message);
-          await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).remove();
-          renderBonusTasksPage();
-          return;
-        }
-        
-        if (task.globalLimit > 0 && (task.completions || 0) >= task.globalLimit) { showAlert("❌ গ্লোবাল লিমিট শেষ।"); renderBonusTasksPage(); return; }
-        
-        let userCompletionsSnap = await db.ref(`users/${tgUser.id}/bonusTaskCompletions`).once('value');
-        let userCompletions = userCompletionsSnap.val() || {};
-        let userCount = 0;
-        for (let k in userCompletions) if (userCompletions[k] && userCompletions[k].taskId === key) userCount++;
-        if (task.userLimit > 0 && userCount >= task.userLimit) { showAlert("❌ আপনার লিমিট শেষ।"); renderBonusTasksPage(); return; }
-        
-        // ALL VALIDATIONS PASSED
-        let completionKey = db.ref(`users/${tgUser.id}/bonusTaskCompletions`).push().key;
-        await db.ref(`users/${tgUser.id}/bonusTaskCompletions/${completionKey}`).set({ taskId: key, taskName: task.name, reward: reward, timeSpent: timeSpent, timestamp: Date.now() });
-        await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).remove();
-        
-        userState.earningWallet = (userState.earningWallet || 0) + reward;
-        userState.totalEarned = (userState.totalEarned || 0) + reward;
-        await db.ref(`users/${tgUser.id}`).update({ earningWallet: userState.earningWallet, totalEarned: userState.totalEarned });
-        await db.ref(`config/bonusTasks/${key}/completions`).transaction(v => (v || 0) + 1);
-        await addHistory('Bonus Task', task.name, reward, 'Completed');
-        await processReferralEarnings(tgUser.id, reward, 'Bonus Task');
-        await sendAdminNotification(`✅ Bonus Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${reward} Coins\nTime: ${timeSpent}s`);
-        
-        currentBonusTaskKey = null;
-        bonusTaskStartTime = null;
-        hasCompletedTimer = false;
-        if (timerCheckInterval) { clearInterval(timerCheckInterval); timerCheckInterval = null; }
-        
-        let successMessage = `🎉 অভিনন্দন! আপনি ${reward} কয়েন পেয়েছেন!\n\n`;
-        successMessage += `✅ আপনি ${requiredSeconds} সেকেন্ড সম্পূর্ণ করেছেন।`;
-        showAlert(successMessage);
-        renderAll();
-        renderBonusTasksPage();
-      });
-    });
   }
 
   function renderAll() {
@@ -914,7 +1129,8 @@
     let ref = db.ref(`users/${tgUser.id}`), snap = await ref.once('value'), data = snap.val();
     
     if (data && data.blocked === true) {
-      document.getElementById('loader-screen').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>অ্যাকাউন্ট ব্লক</h3><p>আপনার অ্যাকাউন্ট ব্লক করা হয়েছে।</p></div>`;
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>অ্যাকাউন্ট ব্লক</h3><p>আপনার অ্যাকাউন্ট ব্লক করা হয়েছে।</p></div>`;
       throw new Error("User blocked");
     }
     
@@ -959,19 +1175,23 @@
     let deviceId = stored.replace(/[^a-zA-Z0-9_-]/g, '_');
     let snap = await db.ref(`deviceLock/${deviceId}`).once('value');
     if (snap.val() && snap.val() !== uid) {
-      document.getElementById('loader-screen').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>ডিভাইস লক</h3><p>আপনার ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।</p></div>`;
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>ডিভাইস লক</h3><p>আপনার ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।</p></div>`;
       throw new Error("Device locked");
     }
     if (!snap.val()) await db.ref(`deviceLock/${deviceId}`).set(uid);
   }
   
-  setInterval(() => { renderPremiumAdCard(); renderBonusTasksPage(); }, 1000);
+  setInterval(() => { renderPremiumAdCard(); if (document.getElementById('web-task-page')?.classList.contains('active')) renderWebTasksPage(); }, 1000);
   
   async function initApp() {
     tg.ready(); tg.expand();
     document.body.className = (tg.colorScheme || 'light') + '-theme';
     tgUser = tg.initDataUnsafe?.user || null;
-    if (!tgUser) { document.getElementById('loader-screen').innerHTML = '<p>Error: Telegram user not found.</p>'; return; }
+    if (!tgUser) { 
+      document.getElementById('loadingScreen').innerHTML = '<p style="color:white;">Error: Telegram user not found.</p>'; 
+      return; 
+    }
     
     const firebaseConfig = { apiKey: "AIzaSyB03K2JAA4iyBLgAX6Nv9Z0VMGX3qMGqBc", authDomain: "earnify-f3ac8.firebaseapp.com", databaseURL: "https://earnify-f3ac8-default-rtdb.firebaseio.com", projectId: "earnify-f3ac8", storageBucket: "earnify-f3ac8.firebasestorage.app", messagingSenderId: "273672601348", appId: "1:273672601348:web:4d627b5689575857345a51" };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -982,7 +1202,7 @@
     appConfig.adminChatId = appConfig.adminChatId || '8705098472';
     
     if (!appConfig.botToken || !appConfig.botUsername) {
-      document.getElementById('loader-screen').innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#F59E0B;"></i><h3>সেটআপ প্রয়োজন</h3><p>অ্যাপটি সম্পূর্ণ কনফিগার করা হয়নি।</p></div>`;
+      document.getElementById('loadingScreen').innerHTML = `<div style="text-align:center; padding:40px; color:white;"><i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#F59E0B;"></i><h3>সেটআপ প্রয়োজন</h3><p>অ্যাপটি সম্পূর্ণ কনফিগার করা হয়নি।</p></div>`;
       return;
     }
     
@@ -992,16 +1212,32 @@
     renderAdPlatformTabs();
     renderPremiumAdCard();
     renderAll();
-    renderBonusTasksPage();
+    renderWebTasksPage();
     
-    setTimeout(() => { document.getElementById('loader-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; }, 500);
+    // Premium Loading Animation
+    let p = 0;
+    const percentEl = document.getElementById('percent');
+    const loadingScreen = document.getElementById('loadingScreen');
+    
+    const loadInterval = setInterval(() => {
+      p++;
+      percentEl.innerText = p + '%';
+      
+      if (p >= 100) {
+        clearInterval(loadInterval);
+        loadingScreen.style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+      }
+    }, 15);
     
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
-      let imgHtml = sitePopup.image ? `<img src="${sitePopup.image}" style="max-width:100%; border-radius:16px; margin:10px 0;">` : '';
-      document.getElementById('global-popup-body').innerHTML = `<div style="text-align:center;"><h2>${escapeHtml(sitePopup.title || 'স্বাগতম')}</h2>${imgHtml}<p>${escapeHtml(sitePopup.description || '')}</p><button class="action-btn close-modal">বন্ধ করুন</button></div>`;
-      showModal('global-popup');
-      document.querySelector('#global-popup .close-modal').onclick = () => hideModal('global-popup');
+      setTimeout(() => {
+        let imgHtml = sitePopup.image ? `<img src="${sitePopup.image}" style="max-width:100%; border-radius:16px; margin:10px 0;">` : '';
+        document.getElementById('global-popup-body').innerHTML = `<div style="text-align:center;"><h2>${escapeHtml(sitePopup.title || 'স্বাগতম')}</h2>${imgHtml}<p>${escapeHtml(sitePopup.description || '')}</p><button class="action-btn close-modal">বন্ধ করুন</button></div>`;
+        showModal('global-popup');
+        document.querySelector('#global-popup .close-modal').onclick = () => hideModal('global-popup');
+      }, 500);
     }
   }
   
@@ -1013,7 +1249,7 @@
       document.getElementById(pageId)?.classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      if (pageId === 'bonus-tasks-page') renderBonusTasksPage();
+      if (pageId === 'web-task-page') renderWebTasksPage();
       else if (pageId === 'home-page') { renderAdPlatformTabs(); renderPremiumAdCard(); renderDailyCheckIn(); }
       else if (pageId === 'profile-page') renderReferralSection();
     });
@@ -1039,7 +1275,10 @@
   
   document.getElementById('support-top-icon').onclick = () => { tg.openLink(appConfig.supportLink || 'https://t.me/'); };
   
-  window.addEventListener('click', e => { if (e.target.classList?.contains('modal-overlay')) e.target.style.display = 'none'; });
+  window.addEventListener('click', e => { 
+    if (e.target.classList?.contains('modal-overlay')) e.target.style.display = 'none';
+    if (e.target.id === 'customPopupOverlay') hideCustomPopup();
+  });
   
   async function startWithdraw(type) {
     let minRef = appConfig.withdrawReferralLimit || 0;
