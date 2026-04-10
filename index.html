@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -21,16 +21,23 @@
     body.dark-theme { background-color: #1B2631; color: #FDFEFE; --surface: #283747; --border: #566573; --shadow: 0 8px 20px rgba(0,0,0,0.2); }
     #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; display: none; overflow-x: hidden; }
     
-    /* ========== PREMIUM LOADING SCREEN (NO SPIN - COLOR ROTATION) ========== */
+    /* ========== PREMIUM LOADING SCREEN (BLUR IMAGE + 10-12 SEC) ========== */
     #loadingScreen {
       position: fixed;
       width: 100%;
       height: 100%;
-      background: #0b1120;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
+    }
+    .loading-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=500') center/cover no-repeat;
+      filter: blur(12px);
+      opacity: 0.4;
     }
     .circle {
       width: 160px;
@@ -41,6 +48,8 @@
       align-items: center;
       justify-content: center;
       animation: rotateColors 2s linear infinite;
+      position: relative;
+      z-index: 1;
     }
     .inner {
       width: 130px;
@@ -58,25 +67,24 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* ========== PREMIUM POPUP SYSTEM (SMALL BOX) ========== */
+    /* ========== PREMIUM POPUP SYSTEM (SMALL BOX - GLASS EFFECT) ========== */
     .popup {
       position: fixed;
-      top: 20%;
+      top: 25%;
       left: 50%;
       transform: translateX(-50%);
-      width: 300px;
-      background: #fff;
-      border-radius: 20px;
-      padding: 24px 20px;
+      width: 260px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
       z-index: 9999;
-      border: 1px solid rgba(0,0,0,0.1);
     }
     body.dark-theme .popup {
-      background: #1e293b;
+      background: rgba(30, 41, 59, 0.95);
       color: #fff;
-      border: 1px solid #334155;
     }
     .popup.hidden { display: none; }
     .popup h3 {
@@ -374,8 +382,9 @@
 </head>
 <body>
 
-<!-- ========== PREMIUM LOADING SCREEN (COLOR ROTATION, NO SPIN) ========== -->
+<!-- ========== PREMIUM LOADING SCREEN (BLUR IMAGE + 10-12 SEC) ========== -->
 <div id="loadingScreen">
+  <div class="loading-bg"></div>
   <div class="circle">
     <div class="inner">
       <span id="percent">0%</span>
@@ -385,12 +394,12 @@
 
 <!-- ========== PREMIUM POPUP SYSTEM (SMALL BOX) ========== -->
 <div id="popupBox" class="popup hidden">
-  <h3 id="popupTitle">জরুরি নোটিশ</h3>
+  <h3 id="popupTitle">Notice</h3>
   <img id="popupUserPhoto" src="https://via.placeholder.com/60" style="display:none;">
   <p id="popupUserName"></p>
   <p id="popupMessage"></p>
   <div id="popupButtons">
-    <button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>
+    <button id="popupOkBtn" onclick="window.closePopup()">OK</button>
   </div>
 </div>
 
@@ -423,7 +432,7 @@
     <!-- WEB TASK PAGE -->
     <div id="web-task-page" class="page">
       <h3 style="margin-bottom:16px;"><i class="fas fa-globe" style="color:#E74C3C;"></i> Web Tasks</h3>
-      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">ওয়েব টাস্ক সম্পন্ন করে কয়েন অর্জন করুন!</p>
+      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">Complete web tasks to earn coins!</p>
       <div id="web-tasks-container"></div>
     </div>
     
@@ -472,9 +481,6 @@
   let userState = {};
   let tgUser = {};
   
-  // Default Bot Username
-  const DEFAULT_BOT_USERNAME = "video_group_link_bot";
-  
   let adCounts = { monetag: 0, gigapub: 0, adsgram: 0, adexium: 0 };
   let breakEnds = { monetag: 0, gigapub: 0, adsgram: 0, adexium: 0 };
   let adLocks = { monetag: false, gigapub: false, adsgram: false, adexium: false };
@@ -501,10 +507,9 @@
     const messageEl = document.getElementById('popupMessage');
     const buttonsDiv = document.getElementById('popupButtons');
     
-    titleEl.innerText = title || 'জরুরি নোটিশ';
+    titleEl.innerText = title || 'Notice';
     messageEl.innerText = message;
     
-    // User info
     const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
     const userPhoto = userState.photoUrl || 'https://via.placeholder.com/60';
     
@@ -517,7 +522,6 @@
       nameEl.innerText = '';
     }
     
-    // Buttons
     if (options.buttons) {
       buttonsDiv.innerHTML = '';
       options.buttons.forEach(btn => {
@@ -528,12 +532,11 @@
         buttonsDiv.appendChild(button);
       });
     } else {
-      buttonsDiv.innerHTML = '<button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>';
+      buttonsDiv.innerHTML = '<button id="popupOkBtn" onclick="window.closePopup()">OK</button>';
     }
     
     popup.classList.remove('hidden');
     
-    // Auto close after 15 seconds if no custom buttons
     if (!options.buttons && options.autoClose !== false) {
       if (popupTimeout) clearTimeout(popupTimeout);
       popupTimeout = setTimeout(() => {
@@ -690,7 +693,7 @@
   
   async function handleAdWatch(platform) {
     if (adLocks[platform]) { 
-      showPopup('⏳ অপেক্ষা করুন', 'অনুগ্রহ করে অপেক্ষা করুন, অ্যাড প্রসেস হচ্ছে...');
+      showPopup('Please wait', 'Ad is processing...');
       return; 
     }
     const config = {
@@ -702,7 +705,7 @@
     
     const watched = userState[`${platform}AdCount`] || 0;
     if (watched >= config.dailyLimit) { 
-      showPopup('❌ লিমিট শেষ', 'আজকের অ্যাড লিমিট শেষ হয়ে গেছে।');
+      showPopup('Limit Reached', 'Daily ad limit reached.');
       return; 
     }
     
@@ -711,8 +714,19 @@
     
     let success = false;
     try {
-      if (platform === 'monetag') success = await runMonetagAd();
-      else if (platform === 'gigapub') success = await runGigapubAd();
+      // FIX: Monetag = 2 Ads Back-to-Back
+      if (platform === 'monetag') {
+        await runMonetagAd();
+        await runMonetagAd();
+        success = true;
+      }
+      // FIX: Gigapub = 4 Ads
+      else if (platform === 'gigapub') {
+        for(let i = 0; i < 4; i++) {
+          await runGigapubAd();
+        }
+        success = true;
+      }
       else { success = true; }
     } catch(e) { console.warn(e); }
     
@@ -734,16 +748,16 @@
       await addHistory('Watch Ad', `Watched ${platform} Ad`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, `${platform} Ad`);
       await sendAdminNotification(`📺 ${platform} Ad Watched\nUser: ${userState.firstName}\nReward: ${reward} Coins`);
-      showPopup('✅ সফল!', `+${reward} কয়েন অর্জন করেছেন!`);
+      showPopup('Success!', `+${reward} Coins earned!`);
     } else {
-      showPopup('❌ ব্যর্থ', timeSpent < config.taskTime ? `আপনি ${config.taskTime} সেকেন্ড অপেক্ষা করেননি।` : 'অ্যাড লোড করা যায়নি।');
+      showPopup('Failed', timeSpent < config.taskTime ? `You didn't wait ${config.taskTime} seconds.` : 'Ad failed to load.');
     }
     adLocks[platform] = false;
     renderAll();
     renderPremiumAdCard();
   }
 
-  // ========== WEB TASK SYSTEM WITH POPUP ==========
+  // ========== WEB TASK SYSTEM ==========
   async function loadWebTasks() {
     let snap = await db.ref('config/bonusTasks').once('value');
     let tasksData = snap.val() || {};
@@ -755,12 +769,12 @@
   function startTaskPopup(task) {
     pendingTask = task;
     
-    const message = `আপনি OK ক্লিক করলে টাইমার শুরু হবে\n\n📋 ${task.name}\n⏱️ সময়: ${task.taskTime || 30} সেকেন্ড\n💰 ${task.reward} কয়েন\n\n⚠️ ${task.taskTime || 30} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।`;
+    const message = `Click OK to start the timer\n\n📋 ${task.name}\n⏱️ Time: ${task.taskTime || 30} seconds\n💰 ${task.reward} Coins\n\n⚠️ If you return before ${task.taskTime || 30} seconds, you will NOT receive any coins.`;
     
-    showPopup('⏰ টাইমার শুরু', message, {
+    showPopup('Start Timer', message, {
       buttons: [
-        { text: '✅ OK, শুরু করুন', onClick: () => { closePopup(); confirmStartTask(); } },
-        { text: '❌ বাতিল', onClick: () => { closePopup(); pendingTask = null; }, className: 'btn-secondary' }
+        { text: '✅ OK, Start', onClick: () => { closePopup(); confirmStartTask(); } },
+        { text: '❌ Cancel', onClick: () => { closePopup(); pendingTask = null; }, className: 'btn-secondary' }
       ]
     });
   }
@@ -797,7 +811,7 @@
     const requiredTime = currentTask.taskTime || 30;
     
     if (spent < requiredTime) {
-      showPopup('❌ টাস্ক অসম্পূর্ণ', `আপনি নির্ধারিত সময়ের আগে বের হয়েছেন\nতাই কোনো কয়েন পাবেন না\n\nনির্ধারিত সময়: ${requiredTime} সেকেন্ড\nআপনি ছিলেন: ${spent} সেকেন্ড`);
+      showPopup('Task Incomplete', `You left before the required time.\n\nRequired: ${requiredTime} seconds\nYou stayed: ${spent} seconds\n\nYou will NOT receive any coins.`);
       
       db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentTask.key}`).remove();
       currentTask = null;
@@ -815,7 +829,7 @@
     const requiredTime = task.taskTime || 30;
     
     const updatePopup = () => {
-      showPopup('✅ টাস্ক সম্পূর্ণ!', `আপনি সফল ভাবে টাস্ক সম্পূর্ণ করেছেন\n\n💰 পুরস্কার: ${task.reward} কয়েন\n⏱️ সময়: ${requiredTime} সেকেন্ড\n\n${countdown} সেকেন্ড পরে কয়েন পাবেন`, {
+      showPopup('Task Complete!', `You have successfully completed the task!\n\n💰 Reward: ${task.reward} Coins\n⏱️ Time: ${requiredTime} seconds\n\n${countdown} seconds until claim`, {
         buttons: [],
         autoClose: false
       });
@@ -862,7 +876,7 @@
     await processReferralEarnings(tgUser.id, task.reward, 'Web Task');
     await sendAdminNotification(`✅ Web Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${task.reward} Coins`);
     
-    showPopup('🎉 অভিনন্দন!', `আপনি ${task.reward} কয়েন পেয়েছেন!`);
+    showPopup('Congratulations!', `You received ${task.reward} Coins!`);
     
     currentTask = null;
     taskStartTime = 0;
@@ -894,7 +908,7 @@
     if (!container) return;
     
     if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো ওয়েব টাস্ক নেই।</p>';
+      container.innerHTML = '<p style="text-align:center; padding:30px;">No web tasks available.</p>';
       return;
     }
     
@@ -921,15 +935,15 @@
       let buttonAction = '';
       
       if (isGloballyLimited) { 
-        buttonHtml = '🔒 গ্লোবাল লিমিট শেষ'; 
+        buttonHtml = '🔒 Global Limit Reached'; 
         buttonDisabled = true; 
       }
       else if (isUserLimited) { 
-        buttonHtml = `✅ লিমিট শেষ (${userCompletionsCount}/${task.userLimit})`; 
+        buttonHtml = `✅ Limit Reached (${userCompletionsCount}/${task.userLimit})`; 
         buttonDisabled = true; 
       }
       else if (isCompleted) { 
-        buttonHtml = '✅ সম্পন্ন হয়েছে'; 
+        buttonHtml = '✅ Completed'; 
         buttonDisabled = true; 
       }
       else if (timer && timer.startTime) {
@@ -938,16 +952,16 @@
         let requiredSeconds = task.taskTime || timer.taskTime || 30;
         
         if (elapsed >= taskTime) {
-          buttonHtml = `🎁 ${task.reward} কয়েন সংগ্রহ করুন`;
+          buttonHtml = `🎁 Claim ${task.reward} Coins`;
           buttonDisabled = false;
           buttonAction = `window.checkTaskCompletion()`;
         } else {
           let timeSpent = Math.floor(elapsed / 1000);
-          buttonHtml = `⏳ ${timeSpent}/${requiredSeconds}s - অপেক্ষা করুন`;
+          buttonHtml = `⏳ ${timeSpent}/${requiredSeconds}s - Please wait`;
           buttonDisabled = true;
         }
       } else {
-        buttonHtml = `▶ টাস্ক শুরু করুন`;
+        buttonHtml = `▶ Start Task`;
         buttonDisabled = false;
       }
       
@@ -957,14 +971,14 @@
             <img src="${task.photoUrl || 'https://via.placeholder.com/60'}" onerror="this.src='https://via.placeholder.com/60'">
             <div class="web-task-title">
               <h3>${escapeHtml(task.name)}</h3>
-              <p>${escapeHtml(task.description || task.title || 'টাস্ক সম্পন্ন করে কয়েন অর্জন করুন')}</p>
+              <p>${escapeHtml(task.description || task.title || 'Complete this task to earn coins')}</p>
             </div>
           </div>
-          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
+          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} Coins</div>
           <div class="web-task-stats">
-            <span><i class="fas fa-user"></i> আপনার অগ্রগতি: ${userCompletionsCount}/${task.userLimit || 1}</span>
-            <span><i class="fas fa-globe"></i> গ্লোবাল: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
-            <span><i class="fas fa-clock"></i> সময়: ${task.taskTime || 30} সেকেন্ড</span>
+            <span><i class="fas fa-user"></i> Your progress: ${userCompletionsCount}/${task.userLimit || 1}</span>
+            <span><i class="fas fa-globe"></i> Global: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
+            <span><i class="fas fa-clock"></i> Time: ${task.taskTime || 30}s</span>
           </div>
           <button class="web-task-btn" 
             ${buttonDisabled ? 'disabled' : ''} 
@@ -1016,20 +1030,19 @@
       await db.ref(`users/${tgUser.id}`).update({ lastCheckInDate: today, checkInStreak: streak, earningWallet: userState.earningWallet, totalEarned: userState.totalEarned });
       await addHistory('Daily Check-in', `Day ${streak} Reward`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, 'Daily Check-in');
-      showPopup('✅ চেক-ইন সফল!', `+${reward} কয়েন যোগ হয়েছে!`);
+      showPopup('Check-in Successful!', `+${reward} Coins added!`);
       renderAll();
     };
   }
   
   // ========== REFERRAL SYSTEM (FIXED) ==========
   function getRefLink(userId) {
-    const botUsername = appConfig.botUsername || DEFAULT_BOT_USERNAME;
-    return `https://t.me/${botUsername}?start=${userId}`;
+    return `https://t.me/video_group_link_bot?start=${userId}`;
   }
   
   function copyRef(link) {
     navigator.clipboard.writeText(link);
-    showPopup('✅ কপি হয়েছে', 'রেফারেল লিংক কপি করা হয়েছে!');
+    showPopup('Copied!', 'Referral link copied to clipboard!');
   }
   
   function renderReferralSection() {
@@ -1078,7 +1091,7 @@
   async function moveToBalance() {
     let min = appConfig.minWithdrawBalance || 100;
     if ((userState.earningWallet || 0) < min) { 
-      showPopup('❌ অপর্যাপ্ত ব্যালেন্স', `সর্বনিম্ন ${min} কয়েন প্রয়োজন।`);
+      showPopup('Insufficient Balance', `Minimum ${min} coins required.`);
       return; 
     }
     let amount = userState.earningWallet;
@@ -1088,7 +1101,49 @@
     userState.earningWallet = 0;
     await addHistory('Move to Balance', 'Moved from earning wallet', amount, 'Completed');
     renderAll();
-    showPopup('✅ স্থানান্তর সফল!', `${amount} কয়েন মেইন ব্যালেন্সে স্থানান্তরিত হয়েছে!`);
+    showPopup('Success!', `${amount} Coins moved to main balance!`);
+  }
+  
+  // ========== WITHDRAW HISTORY FIX ==========
+  async function loadWithdrawHistory(){
+    let container = document.getElementById("wallet-modal-body");
+    if(!container) return;
+
+    let snap = await db.ref("withdrawals").once("value");
+    let data = snap.val() || {};
+
+    let list = [];
+
+    ["pending","completed","rejected"].forEach(type=>{
+      if(data[type]){
+        Object.values(data[type]).forEach(item=>{
+          if(item.userId == tgUser.id){
+            list.push({...item, status: type});
+          }
+        });
+      }
+    });
+
+    if(list.length === 0){
+      container.innerHTML = "<p style='text-align:center; padding:20px;'>No history found</p>";
+      return;
+    }
+    
+    list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    container.innerHTML = list.map(item=>`
+      <div class="history-item-premium ${item.status}">
+        <div style="display:flex; justify-content:space-between;">
+          <strong>${escapeHtml(item.method || 'N/A')}</strong>
+          <span style="font-weight:700;">${item.amount} Coins</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin:8px 0;">
+          <span>Status: ${item.status}</span>
+        </div>
+        <small>${new Date(item.timestamp).toLocaleString()}</small>
+        ${item.status === 'rejected' && item.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">❌ ${escapeHtml(item.rejectReason)}</p>` : ''}
+      </div>
+    `).join("");
   }
   
   async function loadUserData() {
@@ -1142,7 +1197,7 @@
     let snap = await db.ref(`deviceLock/${deviceId}`).once('value');
     if (snap.val() && snap.val() !== uid) {
       document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>ডিভাইস লক</h3><p>আপনার ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।</p></div>`;
+      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>Device Locked</h3><p>This device already has an account.</p></div>`;
       throw new Error("Device locked");
     }
     if (!snap.val()) await db.ref(`deviceLock/${deviceId}`).set(uid);
@@ -1167,6 +1222,10 @@
     appConfig = configSnap.val() || {};
     appConfig.adminChatId = appConfig.adminChatId || '8705098472';
     
+    // FIX: BOT TOKEN + USERNAME
+    appConfig.botToken = "8261541105:AAE2NTxatnJMLlD1hOTEreIrZfzKivoTx6E";
+    appConfig.botUsername = "video_group_link_bot";
+    
     await enforceDeviceLock(tgUser.id);
     await loadUserData();
     
@@ -1175,7 +1234,7 @@
     renderAll();
     renderWebTasksPage();
     
-    // Premium Loading Animation (1-100%)
+    // Premium Loading Animation (10-12 sec smooth)
     let p = 0;
     const percentEl = document.getElementById('percent');
     const loadingScreen = document.getElementById('loadingScreen');
@@ -1189,17 +1248,16 @@
         loadingScreen.style.display = 'none';
         document.getElementById('app').style.display = 'block';
       }
-    }, 15);
+    }, 120);
     
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
       setTimeout(() => {
-        showPopup(sitePopup.title || 'স্বাগতম', sitePopup.description || '', { showUser: false });
+        showPopup(sitePopup.title || 'Welcome', sitePopup.description || '', { showUser: false });
       }, 500);
     }
   }
   
-  // Global functions for onclick handlers
   window.startTaskPopup = startTaskPopup;
   window.checkTaskCompletion = checkTaskCompletion;
   window.closePopup = closePopup;
@@ -1232,7 +1290,9 @@
     showModal('wallet-modal');
     document.getElementById('withdraw-bdt-card').onclick = () => { hideModal('wallet-modal'); startWithdraw('bdt'); };
     document.getElementById('withdraw-usdt-card').onclick = () => { hideModal('wallet-modal'); startWithdraw('usdt'); };
-    document.getElementById('view-history-btn').onclick = () => { hideModal('wallet-modal'); showWithdrawHistory(); };
+    document.getElementById('view-history-btn').onclick = () => { 
+      loadWithdrawHistory();
+    };
     document.querySelector('#wallet-modal .close-modal').onclick = () => hideModal('wallet-modal');
   };
   
@@ -1245,12 +1305,12 @@
   async function startWithdraw(type) {
     let minRef = appConfig.withdrawReferralLimit || 0;
     if ((userState.referrals || 0) < minRef) { 
-      showPopup('❌ অপর্যাপ্ত রেফারেল', `উইথড্র করতে সর্বনিম্ন ${minRef} রেফারেল প্রয়োজন।`);
+      showPopup('Insufficient Referrals', `Minimum ${minRef} referrals required for withdrawal.`);
       return; 
     }
     let methods = type === 'bdt' ? (appConfig.withdrawBDTMethods || []) : (appConfig.withdrawUSDTMethods || []);
     if (!methods.length) { 
-      showPopup('❌ মেথড নেই', 'কোনো উইথড্র মেথড নেই');
+      showPopup('No Methods', 'No withdrawal methods available.');
       return; 
     }
     
@@ -1280,11 +1340,11 @@
         document.getElementById('confirmW').addEventListener('click', async () => {
           let account = document.getElementById('acc').value.trim(), coinAmount = parseFloat(coinsInp.value);
           if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { 
-            showPopup('❌ ইনপুট ত্রুটি', `সর্বনিম্ন ${method.min || 0} কয়েন প্রয়োজন`);
+            showPopup('Input Error', `Minimum ${method.min || 0} coins required.`);
             return; 
           }
           if (coinAmount > userState.balance) { 
-            showPopup('❌ অপর্যাপ্ত ব্যালেন্স', 'পর্যাপ্ত ব্যালেন্স নেই');
+            showPopup('Insufficient Balance', 'Not enough balance.');
             return; 
           }
           
@@ -1299,44 +1359,12 @@
           });
           await addHistory('Withdrawal Request', `${method.name}`, -coinAmount, 'Pending');
           await sendAdminNotification(`💰 Withdrawal Request\nUser: ${userState.firstName}\nAmount: ${coinAmount} Coins\nMethod: ${method.name}`);
-          showPopup('✅ সাবমিট হয়েছে', 'উইথড্র রিকোয়েস্ট সাবমিট হয়েছে!');
+          showPopup('Submitted!', 'Withdrawal request submitted!');
           hideModal('withdraw-flow-modal'); hideModal('wallet-modal');
           renderAll(); renderPendingWithdrawBanner();
         });
       });
     });
-  }
-  
-  async function showWithdrawHistory() {
-    let [pendingSnap, completedSnap, rejectedSnap] = await Promise.all([
-      db.ref(`withdrawals/pending`).orderByChild('userId').equalTo(tgUser.id).once('value'),
-      db.ref(`withdrawals/completed`).orderByChild('userId').equalTo(tgUser.id).once('value'),
-      db.ref(`withdrawals/rejected`).orderByChild('userId').equalTo(tgUser.id).once('value')
-    ]);
-    let items = [];
-    pendingSnap.forEach(r => items.push({ ...r.val(), status: 'Pending' }));
-    completedSnap.forEach(r => items.push({ ...r.val(), status: 'Completed' }));
-    rejectedSnap.forEach(r => items.push({ ...r.val(), status: 'Rejected' }));
-    items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    
-    let html = `<div class="modal-header"><h3>📋 Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
-    if (!items.length) html += "<p style='text-align:center; padding:40px;'>No withdrawal history</p>";
-    items.forEach(req => {
-      let date = new Date(req.timestamp).toLocaleString(), statusClass = req.status.toLowerCase();
-      let rate = req.type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
-      let fiatAmount = (req.amount * rate).toFixed(2), currency = req.type === 'bdt' ? 'BDT' : 'USDT';
-      html += `<div class="history-item-premium ${statusClass}">
-        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} Coins</span></div>
-        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
-        <small>${date}</small>
-        ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">❌ ${escapeHtml(req.rejectReason)}</p>` : ''}
-        ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">🏦 ${escapeHtml(req.account)}</p>` : ''}
-      </div>`;
-    });
-    html += `</div>`;
-    showModal('wallet-modal');
-    document.getElementById('wallet-modal-body').innerHTML = html;
-    document.querySelector('#wallet-modal .close-modal').onclick = () => hideModal('wallet-modal');
   }
   
   initApp();
