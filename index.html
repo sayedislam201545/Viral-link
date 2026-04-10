@@ -366,6 +366,15 @@
   let adStartTime = {};
   let selectedAdPlatform = 'monetag';
   
+  // Timer tracking for bonus tasks with exit detection
+  let bonusTaskStartTime = null;
+  let currentBonusTaskKey = null;
+  let currentBonusTaskTime = 30;
+  let currentBonusTaskReward = 0;
+  let currentBonusTaskName = '';
+  let hasCompletedTimer = false;
+  let timerCheckInterval = null;
+  
   function formatTime(sec){ let m = Math.floor(sec/60), s = sec%60; return `${m}:${s<10?'0':''}${s}`; }
   function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   function showModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'flex'; }
@@ -374,7 +383,7 @@
   function showAlert(msg, cb){ 
     let body = document.getElementById('global-popup-body'); 
     if(body){ 
-      body.innerHTML = `<div style="text-align:center; padding:20px;"><h3>Notification</h3><p>${msg}</p><button class="action-btn close-modal">OK</button></div>`; 
+      body.innerHTML = `<div style="text-align:center; padding:20px;"><h3>Notification</h3><p style="white-space:pre-line;">${msg}</p><button class="action-btn close-modal">OK</button></div>`; 
       showModal('global-popup'); 
       document.querySelector('#global-popup .close-modal').onclick = () => { hideModal('global-popup'); if(cb) cb(); }; 
     } else { alert(msg); if(cb) cb(); } 
@@ -565,7 +574,7 @@
     renderPremiumAdCard();
   }
 
-  // ========== BONUS TASKS WITH STRICT TIMER VALIDATION ==========
+  // ========== BONUS TASKS WITH STRICT TIMER VALIDATION & EXIT DETECTION ==========
   async function loadBonusTasks() {
     let snap = await db.ref('config/bonusTasks').once('value');
     let tasksData = snap.val() || {};
@@ -574,13 +583,14 @@
     return tasks;
   }
   
-  // Timer tracking variables
-  let bonusTaskStartTime = null;
-  let currentBonusTaskKey = null;
-  
+  // Function to start bonus task timer
   function startBonusTaskTimer(key, link, taskTime, reward, taskName) {
     currentBonusTaskKey = key;
+    currentBonusTaskTime = taskTime;
+    currentBonusTaskReward = reward;
+    currentBonusTaskName = taskName;
     bonusTaskStartTime = Date.now();
+    hasCompletedTimer = false;
     
     db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).set({
         startTime: bonusTaskStartTime,
@@ -590,9 +600,60 @@
     });
     
     if (link) { tg.openLink(link); }
-    showAlert(`⏰ Timer started! Stay for ${taskTime} seconds to earn ${reward} coins.`);
+    
+    showAlert(`⏰ টাইমার শুরু হয়েছে!\n\n📋 ${taskName}\n⏱️ নির্ধারিত সময়: ${taskTime} সেকেন্ড\n💰 পুরস্কার: ${reward} কয়েন\n\n⚠️ ${taskTime} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।`);
+    
+    if (timerCheckInterval) clearInterval(timerCheckInterval);
+    timerCheckInterval = setInterval(() => {
+        if (bonusTaskStartTime && currentBonusTaskKey) {
+            let elapsed = Date.now() - bonusTaskStartTime;
+            if (elapsed >= currentBonusTaskTime * 1000) {
+                hasCompletedTimer = true;
+                clearInterval(timerCheckInterval);
+                timerCheckInterval = null;
+            }
+        }
+    }, 500);
+    
     renderBonusTasksPage();
   }
+
+  // Function to handle user returning from external site
+  function handleUserReturn() {
+    if (currentBonusTaskKey && bonusTaskStartTime) {
+        let elapsed = Date.now() - bonusTaskStartTime;
+        let requiredTime = currentBonusTaskTime * 1000;
+        let timeSpent = Math.floor(elapsed / 1000);
+        
+        if (elapsed < requiredTime) {
+            let message = `❌ আপনি ${currentBonusTaskTime} সেকেন্ডের আগে বের হয়েছেন!\n\n`;
+            message += `📋 নির্ধারিত সময়: ${currentBonusTaskTime} সেকেন্ড\n`;
+            message += `⏱️ আপনার অবস্থানকাল: ${timeSpent} সেকেন্ড\n\n`;
+            message += `😔 আপনি কোনো রকম কয়েন পাবেন না।`;
+            
+            showAlert(message);
+            db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentBonusTaskKey}`).remove();
+            currentBonusTaskKey = null;
+            bonusTaskStartTime = null;
+            hasCompletedTimer = false;
+            if (timerCheckInterval) { clearInterval(timerCheckInterval); timerCheckInterval = null; }
+            renderBonusTasksPage();
+        } else {
+            let message = `✅ আপনি ${currentBonusTaskTime} সেকেন্ড সম্পূর্ণ করেছেন!\n\n`;
+            message += `🎁 এখন "Claim Reward" বাটনে ক্লিক করে ${currentBonusTaskReward} কয়েন সংগ্রহ করুন।`;
+            showAlert(message);
+            hasCompletedTimer = true;
+            renderBonusTasksPage();
+        }
+    }
+  }
+
+  // Handle app visibility change (when user returns from external site)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') { handleUserReturn(); }
+  });
+  
+  window.addEventListener('focus', () => { handleUserReturn(); });
   
   async function renderBonusTasksPage() {
     let tasks = await loadBonusTasks();
@@ -605,7 +666,7 @@
     if (!container) return;
     
     if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:30px;">No bonus tasks available.</p>';
+      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো বোনাস টাস্ক নেই।</p>';
       return;
     }
     
@@ -630,22 +691,24 @@
       let buttonHtml = '';
       let buttonDisabled = false;
       
-      if (isGloballyLimited) { buttonHtml = '🔒 Global Limit Reached'; buttonDisabled = true; }
-      else if (isUserLimited) { buttonHtml = `✅ Limit Reached (${userCompletionsCount}/${task.userLimit})`; buttonDisabled = true; }
-      else if (isCompleted) { buttonHtml = '✅ Already Completed'; buttonDisabled = true; }
+      if (isGloballyLimited) { buttonHtml = '🔒 গ্লোবাল লিমিট শেষ'; buttonDisabled = true; }
+      else if (isUserLimited) { buttonHtml = `✅ লিমিট শেষ (${userCompletionsCount}/${task.userLimit})`; buttonDisabled = true; }
+      else if (isCompleted) { buttonHtml = '✅ সম্পন্ন হয়েছে'; buttonDisabled = true; }
       else if (timer && timer.startTime) {
         let elapsed = Date.now() - timer.startTime;
         let taskTime = (task.taskTime || timer.taskTime || 30) * 1000;
+        let requiredSeconds = task.taskTime || timer.taskTime || 30;
+        
         if (elapsed >= taskTime) {
-          buttonHtml = '🎁 Claim Reward';
+          buttonHtml = `🎁 ${task.reward} কয়েন সংগ্রহ করুন`;
           buttonDisabled = false;
         } else {
           let timeSpent = Math.floor(elapsed / 1000);
-          buttonHtml = `⏳ ${timeSpent}/${task.taskTime || timer.taskTime || 30}s`;
+          buttonHtml = `⏳ ${timeSpent}/${requiredSeconds}s - অপেক্ষা করুন`;
           buttonDisabled = true;
         }
       } else {
-        buttonHtml = '▶ Start Task';
+        buttonHtml = `▶ টাস্ক শুরু করুন`;
         buttonDisabled = false;
       }
       
@@ -655,14 +718,14 @@
             <img src="${task.photoUrl || 'https://via.placeholder.com/60'}" onerror="this.src='https://via.placeholder.com/60'">
             <div class="bonus-task-title">
               <h3>${escapeHtml(task.name)}</h3>
-              <p>${escapeHtml(task.description || task.title || 'Complete this task to earn coins')}</p>
+              <p>${escapeHtml(task.description || task.title || 'টাস্ক সম্পন্ন করে কয়েন অর্জন করুন')}</p>
             </div>
           </div>
-          <div class="bonus-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} Coins</div>
+          <div class="bonus-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
           <div class="bonus-task-stats">
-            <span><i class="fas fa-user"></i> Your progress: ${userCompletionsCount}/${task.userLimit || 1}</span>
-            <span><i class="fas fa-globe"></i> Global: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
-            <span><i class="fas fa-clock"></i> Time: ${task.taskTime || 30}s</span>
+            <span><i class="fas fa-user"></i> আপনার অগ্রগতি: ${userCompletionsCount}/${task.userLimit || 1}</span>
+            <span><i class="fas fa-globe"></i> গ্লোবাল: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
+            <span><i class="fas fa-clock"></i> সময়: ${task.taskTime || 30} সেকেন্ড</span>
           </div>
           <button class="bonus-task-btn ${!buttonDisabled && !timer ? 'bonus-start-btn' : ''} ${!buttonDisabled && timer ? 'bonus-claim-btn' : ''}" 
             data-key="${task.key}" data-link="${task.link}" data-time="${task.taskTime || 30}" 
@@ -676,7 +739,7 @@
     document.querySelectorAll('.bonus-start-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         let key = btn.dataset.key, link = btn.dataset.link, time = parseInt(btn.dataset.time) || 30, reward = parseFloat(btn.dataset.reward) || 0, name = btn.dataset.name || 'Task';
-        if (!link) { showAlert("No link provided."); return; }
+        if (!link) { showAlert("❌ এই টাস্কের জন্য কোনো লিংক নেই।"); return; }
         startBonusTaskTimer(key, link, time, reward, name);
       });
     });
@@ -688,34 +751,39 @@
         
         let timerSnap = await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).once('value');
         let timer = timerSnap.val();
-        if (!timer || !timer.startTime) { showAlert("❌ Timer not found. Please start again."); renderBonusTasksPage(); return; }
+        if (!timer || !timer.startTime) { showAlert("❌ টাইমার পাওয়া যায়নি। আবার শুরু করুন।"); renderBonusTasksPage(); return; }
         
         let tasks = await loadBonusTasks();
         let task = tasks.find(t => t.key === key);
-        if (!task) { showAlert("❌ Task not found."); return; }
+        if (!task) { showAlert("❌ টাস্ক পাওয়া যায়নি।"); return; }
         
-        // STRICT TIME VALIDATION
         let elapsed = Date.now() - timer.startTime;
         let requiredTime = (task.taskTime || timer.taskTime || 30) * 1000;
+        let timeSpent = Math.floor(elapsed / 1000);
+        let requiredSeconds = task.taskTime || timer.taskTime || 30;
         
         if (elapsed < requiredTime) {
-          let remaining = Math.ceil((requiredTime - elapsed) / 1000);
-          let timeSpent = Math.floor(elapsed / 1000);
-          showAlert(`❌ You must stay for ${task.taskTime || timer.taskTime || 30} seconds!\n\nTime spent: ${timeSpent}s\nRemaining: ${remaining}s`);
+          let message = `❌ আপনি ${requiredSeconds} সেকেন্ডের আগে বের হয়েছেন!\n\n`;
+          message += `📋 নির্ধারিত সময়: ${requiredSeconds} সেকেন্ড\n`;
+          message += `⏱️ আপনার অবস্থানকাল: ${timeSpent} সেকেন্ড\n\n`;
+          message += `😔 আপনি কোনো রকম কয়েন পাবেন না।`;
+          showAlert(message);
+          await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).remove();
+          renderBonusTasksPage();
           return;
         }
         
-        if (task.globalLimit > 0 && (task.completions || 0) >= task.globalLimit) { showAlert("❌ Global limit reached."); renderBonusTasksPage(); return; }
+        if (task.globalLimit > 0 && (task.completions || 0) >= task.globalLimit) { showAlert("❌ গ্লোবাল লিমিট শেষ।"); renderBonusTasksPage(); return; }
         
         let userCompletionsSnap = await db.ref(`users/${tgUser.id}/bonusTaskCompletions`).once('value');
         let userCompletions = userCompletionsSnap.val() || {};
         let userCount = 0;
         for (let k in userCompletions) if (userCompletions[k] && userCompletions[k].taskId === key) userCount++;
-        if (task.userLimit > 0 && userCount >= task.userLimit) { showAlert("❌ User limit reached."); renderBonusTasksPage(); return; }
+        if (task.userLimit > 0 && userCount >= task.userLimit) { showAlert("❌ আপনার লিমিট শেষ।"); renderBonusTasksPage(); return; }
         
         // ALL VALIDATIONS PASSED
         let completionKey = db.ref(`users/${tgUser.id}/bonusTaskCompletions`).push().key;
-        await db.ref(`users/${tgUser.id}/bonusTaskCompletions/${completionKey}`).set({ taskId: key, taskName: task.name, reward: reward, timeSpent: Math.floor(elapsed / 1000), timestamp: Date.now() });
+        await db.ref(`users/${tgUser.id}/bonusTaskCompletions/${completionKey}`).set({ taskId: key, taskName: task.name, reward: reward, timeSpent: timeSpent, timestamp: Date.now() });
         await db.ref(`users/${tgUser.id}/bonusTaskTimers/${key}`).remove();
         
         userState.earningWallet = (userState.earningWallet || 0) + reward;
@@ -724,9 +792,16 @@
         await db.ref(`config/bonusTasks/${key}/completions`).transaction(v => (v || 0) + 1);
         await addHistory('Bonus Task', task.name, reward, 'Completed');
         await processReferralEarnings(tgUser.id, reward, 'Bonus Task');
-        await sendAdminNotification(`✅ Bonus Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${reward} Coins\nTime: ${Math.floor(elapsed / 1000)}s`);
+        await sendAdminNotification(`✅ Bonus Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${reward} Coins\nTime: ${timeSpent}s`);
         
-        showAlert(`🎉 +${reward} Coins earned!\n\nYou stayed for ${Math.floor(elapsed / 1000)} seconds.`);
+        currentBonusTaskKey = null;
+        bonusTaskStartTime = null;
+        hasCompletedTimer = false;
+        if (timerCheckInterval) { clearInterval(timerCheckInterval); timerCheckInterval = null; }
+        
+        let successMessage = `🎉 অভিনন্দন! আপনি ${reward} কয়েন পেয়েছেন!\n\n`;
+        successMessage += `✅ আপনি ${requiredSeconds} সেকেন্ড সম্পূর্ণ করেছেন।`;
+        showAlert(successMessage);
         renderAll();
         renderBonusTasksPage();
       });
@@ -763,40 +838,40 @@
     
     let streak = (userState.checkInStreak || 0) + 1;
     let reward = appConfig.dailyCheckinReward || 50;
-    container.innerHTML = `<div class="daily-checkin-card"><div><h3>Day ${streak} Check-in</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">🎁 Claim ${reward} Coins</button></div>`;
+    container.innerHTML = `<div class="daily-checkin-card"><div><h3>দিন ${streak} চেক-ইন</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">🎁 ${reward} কয়েন সংগ্রহ</button></div>`;
     
     document.getElementById('start-checkin-btn').onclick = async () => {
       userState.lastCheckInDate = today; userState.checkInStreak = streak;
       userState.earningWallet = (userState.earningWallet || 0) + reward;
       userState.totalEarned = (userState.totalEarned || 0) + reward;
       await db.ref(`users/${tgUser.id}`).update({ lastCheckInDate: today, checkInStreak: streak, earningWallet: userState.earningWallet, totalEarned: userState.totalEarned });
-      await addHistory('Daily Check-in', `Day ${streak} Reward`, reward, 'Completed');
+      await addHistory('Daily Check-in', `দিন ${streak} পুরস্কার`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, 'Daily Check-in');
-      showAlert(`🎉 +${reward} Coins added!`);
+      showAlert(`🎉 +${reward} কয়েন যোগ হয়েছে!`);
       renderAll();
     };
   }
   
   function renderReferralSection() {
     let botUsername = appConfig.botUsername || '';
-    if (!botUsername) { document.getElementById('referral-section').innerHTML = '<p style="text-align:center; padding:20px;">Bot username not configured.</p>'; return; }
+    if (!botUsername) { document.getElementById('referral-section').innerHTML = '<p style="text-align:center; padding:20px;">বট ইউজারনেম কনফিগার করা হয়নি।</p>'; return; }
     let link = `https://t.me/${botUsername}?start=${tgUser.id}`;
     
     let container = document.getElementById('referral-section');
     if (container) {
       container.innerHTML = `
         <div class="referral-premium-card">
-          <div class="referral-premium-header"><i class="fas fa-gift"></i><h3>Refer & Earn More!</h3></div>
-          <p style="margin-bottom:12px; font-size:0.85rem;">Share your link and earn ${appConfig.referralPercent || 0}% commission</p>
-          <div class="referral-premium-link-box"><input id="ref-link" value="${link}" readonly><button id="copy-ref"><i class="fas fa-copy"></i> Copy</button></div>
+          <div class="referral-premium-header"><i class="fas fa-gift"></i><h3>রেফার করে আরও আয় করুন!</h3></div>
+          <p style="margin-bottom:12px; font-size:0.85rem;">আপনার লিংক শেয়ার করে ${appConfig.referralPercent || 0}% কমিশন অর্জন করুন</p>
+          <div class="referral-premium-link-box"><input id="ref-link" value="${link}" readonly><button id="copy-ref"><i class="fas fa-copy"></i> কপি</button></div>
           <div class="referral-premium-stats">
-            <div class="referral-stat"><div class="value">${userState.referrals || 0}</div><div class="label">Referrals</div></div>
-            <div class="referral-stat"><div class="value">${appConfig.referralPercent || 0}%</div><div class="label">Commission</div></div>
-            <div class="referral-stat"><div class="value">${appConfig.referralBonus || 100}</div><div class="label">Bonus</div></div>
+            <div class="referral-stat"><div class="value">${userState.referrals || 0}</div><div class="label">রেফারেল</div></div>
+            <div class="referral-stat"><div class="value">${appConfig.referralPercent || 0}%</div><div class="label">কমিশন</div></div>
+            <div class="referral-stat"><div class="value">${appConfig.referralBonus || 100}</div><div class="label">বোনাস</div></div>
           </div>
         </div>
       `;
-      document.getElementById('copy-ref').onclick = () => { navigator.clipboard.writeText(link); showAlert("✅ Referral link copied!"); };
+      document.getElementById('copy-ref').onclick = () => { navigator.clipboard.writeText(link); showAlert("✅ রেফারেল লিংক কপি হয়েছে!"); };
     }
   }
   
@@ -813,10 +888,10 @@
     
     container.innerHTML = `
       <div class="pending-withdraw-banner">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#F59E0B;"></i><h4 style="color:#92400E;">Withdrawal Pending</h4></div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#F59E0B;"></i><h4 style="color:#92400E;">উইথড্র পেন্ডিং</h4></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.85rem;">
-          <div><strong>Amount:</strong> ${req.amount} Coins</div><div><strong>Value:</strong> ${fiatAmount} ${currency}</div>
-          <div><strong>Method:</strong> ${escapeHtml(req.method)}</div><div><strong>Date:</strong> ${new Date(req.timestamp).toLocaleDateString()}</div>
+          <div><strong>পরিমাণ:</strong> ${req.amount} কয়েন</div><div><strong>মূল্য:</strong> ${fiatAmount} ${currency}</div>
+          <div><strong>মেথড:</strong> ${escapeHtml(req.method)}</div><div><strong>তারিখ:</strong> ${new Date(req.timestamp).toLocaleDateString()}</div>
         </div>
       </div>
     `;
@@ -824,22 +899,22 @@
   
   async function moveToBalance() {
     let min = appConfig.minWithdrawBalance || 100;
-    if ((userState.earningWallet || 0) < min) { showAlert(`Minimum ${min} coins required.`); return; }
+    if ((userState.earningWallet || 0) < min) { showAlert(`সর্বনিম্ন ${min} কয়েন প্রয়োজন।`); return; }
     let amount = userState.earningWallet;
     await db.ref(`users/${tgUser.id}/balance`).transaction(v => (v||0) + amount);
     await db.ref(`users/${tgUser.id}/earningWallet`).set(0);
     userState.balance = (userState.balance || 0) + amount;
     userState.earningWallet = 0;
-    await addHistory('Move to Balance', 'Moved from earning wallet', amount, 'Completed');
+    await addHistory('Move to Balance', 'আর্নিং ওয়ালেট থেকে স্থানান্তর', amount, 'Completed');
     renderAll();
-    showAlert(`✅ ${amount} Coins moved!`);
+    showAlert(`✅ ${amount} কয়েন স্থানান্তরিত হয়েছে!`);
   }
   
   async function loadUserData() {
     let ref = db.ref(`users/${tgUser.id}`), snap = await ref.once('value'), data = snap.val();
     
     if (data && data.blocked === true) {
-      document.getElementById('loader-screen').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>Account Blocked</h3><p>Your account has been blocked.</p></div>`;
+      document.getElementById('loader-screen').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>অ্যাকাউন্ট ব্লক</h3><p>আপনার অ্যাকাউন্ট ব্লক করা হয়েছে।</p></div>`;
       throw new Error("User blocked");
     }
     
@@ -862,12 +937,12 @@
         if (bonus > 0) {
           await db.ref(`users/${referralId}/earningWallet`).transaction(b => (b||0) + bonus);
           await db.ref(`users/${referralId}/totalEarned`).transaction(v => (v||0) + bonus);
-          await db.ref(`users/${referralId}/history`).push({ type: 'Referral Bonus', name: `New referral: ${tgUser.first_name}`, reward: bonus, status: 'Completed', timestamp: firebase.database.ServerValue.TIMESTAMP });
+          await db.ref(`users/${referralId}/history`).push({ type: 'Referral Bonus', name: `নতুন রেফারেল: ${tgUser.first_name}`, reward: bonus, status: 'Completed', timestamp: firebase.database.ServerValue.TIMESTAMP });
         }
         await db.ref(`users/${referralId}/referrals`).transaction(r => (r||0) + 1);
-        await sendAdminNotification(`👥 New Referral\nUser: ${tgUser.first_name} joined via ${referralId}${bonus > 0 ? '\nBonus: ' + bonus + ' Coins' : ''}`);
+        await sendAdminNotification(`👥 নতুন রেফারেল\nইউজার: ${tgUser.first_name} ${referralId} এর মাধ্যমে জয়েন করেছেন${bonus > 0 ? '\nবোনাস: ' + bonus + ' কয়েন' : ''}`);
       }
-      await sendAdminNotification(`🆕 New User Joined!\n👤 ${tgUser.first_name}\n🆔 ${tgUser.id}`);
+      await sendAdminNotification(`🆕 নতুন ইউজার জয়েন করেছেন!\n👤 ${tgUser.first_name}\n🆔 ${tgUser.id}`);
     }
     
     let today = new Date().toISOString().slice(0,10);
@@ -907,7 +982,7 @@
     appConfig.adminChatId = appConfig.adminChatId || '8705098472';
     
     if (!appConfig.botToken || !appConfig.botUsername) {
-      document.getElementById('loader-screen').innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#F59E0B;"></i><h3>Setup Required</h3><p>The app is not fully configured yet.</p></div>`;
+      document.getElementById('loader-screen').innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#F59E0B;"></i><h3>সেটআপ প্রয়োজন</h3><p>অ্যাপটি সম্পূর্ণ কনফিগার করা হয়নি।</p></div>`;
       return;
     }
     
@@ -924,7 +999,7 @@
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
       let imgHtml = sitePopup.image ? `<img src="${sitePopup.image}" style="max-width:100%; border-radius:16px; margin:10px 0;">` : '';
-      document.getElementById('global-popup-body').innerHTML = `<div style="text-align:center;"><h2>${escapeHtml(sitePopup.title || 'Welcome')}</h2>${imgHtml}<p>${escapeHtml(sitePopup.description || '')}</p><button class="action-btn close-modal">Close</button></div>`;
+      document.getElementById('global-popup-body').innerHTML = `<div style="text-align:center;"><h2>${escapeHtml(sitePopup.title || 'স্বাগতম')}</h2>${imgHtml}<p>${escapeHtml(sitePopup.description || '')}</p><button class="action-btn close-modal">বন্ধ করুন</button></div>`;
       showModal('global-popup');
       document.querySelector('#global-popup .close-modal').onclick = () => hideModal('global-popup');
     }
@@ -950,10 +1025,10 @@
     let bdtImg = 'https://img.icons8.com/color/96/bangladesh.png', usdtImg = 'https://img.icons8.com/color/96/us-dollar.png';
     document.getElementById('wallet-modal-body').innerHTML = `
       <div class="methods-grid-3">
-        <div id="withdraw-bdt-card" class="method-card-item"><img src="${bdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>BDT Withdraw</p></div>
-        <div id="withdraw-usdt-card" class="method-card-item"><img src="${usdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>USDT Withdraw</p></div>
+        <div id="withdraw-bdt-card" class="method-card-item"><img src="${bdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>BDT উইথড্র</p></div>
+        <div id="withdraw-usdt-card" class="method-card-item"><img src="${usdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>USDT উইথড্র</p></div>
       </div>
-      <button id="view-history-btn" class="action-btn" style="width:100%; margin-top:16px;"><i class="fas fa-history"></i> Withdraw History</button>
+      <button id="view-history-btn" class="action-btn" style="width:100%; margin-top:16px;"><i class="fas fa-history"></i> উইথড্র হিস্টোরি</button>
     `;
     showModal('wallet-modal');
     document.getElementById('withdraw-bdt-card').onclick = () => { hideModal('wallet-modal'); startWithdraw('bdt'); };
@@ -968,11 +1043,11 @@
   
   async function startWithdraw(type) {
     let minRef = appConfig.withdrawReferralLimit || 0;
-    if ((userState.referrals || 0) < minRef) { showAlert(`Withdrawal requires at least ${minRef} referrals.`); return; }
+    if ((userState.referrals || 0) < minRef) { showAlert(`উইথড্র করতে সর্বনিম্ন ${minRef} রেফারেল প্রয়োজন।`); return; }
     let methods = type === 'bdt' ? (appConfig.withdrawBDTMethods || []) : (appConfig.withdrawUSDTMethods || []);
-    if (!methods.length) { showAlert("No withdrawal methods available"); return; }
+    if (!methods.length) { showAlert("কোনো উইথড্র মেথড নেই"); return; }
     
-    let grid = `<div class="modal-header"><h3>Select ${type.toUpperCase()} Method</h3><span class="close-modal">&times;</span></div><div class="methods-grid-3">`;
+    let grid = `<div class="modal-header"><h3>${type.toUpperCase()} মেথড নির্বাচন করুন</h3><span class="close-modal">&times;</span></div><div class="methods-grid-3">`;
     grid += methods.map((m, i) => `<div class="method-card-item" data-idx="${i}"><img src="${m.photo}" onerror="this.src='https://via.placeholder.com/70'"><p style="font-size:0.7rem;">${escapeHtml(m.name)}</p></div>`).join('') + `</div>`;
     
     document.getElementById('withdraw-flow-container').innerHTML = grid;
@@ -984,10 +1059,10 @@
         let idx = parseInt(el.dataset.idx), method = methods[idx], rate = type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
         let formHtml = `<div class="modal-header"><h3>${escapeHtml(method.name)}</h3><span class="close-modal">&times;</span></div>
           <div style="padding:10px;">
-            <div class="withdraw-form-group"><label>Account Number/Address</label><input id="acc" placeholder="Enter ${type === 'bdt' ? 'Number' : 'Address'}"></div>
-            <div class="withdraw-form-group"><label>Amount (Coins) - Min: ${method.min || 0}</label><input type="number" id="coins" min="${method.min || 0}"></div>
-            <p>You get: <strong id="fiatVal">0</strong> ${type.toUpperCase()}</p>
-            <button id="confirmW" class="action-btn" style="width:100%;">Submit Request</button>
+            <div class="withdraw-form-group"><label>অ্যাকাউন্ট নাম্বার/এড্রেস</label><input id="acc" placeholder="${type === 'bdt' ? 'নাম্বার' : 'এড্রেস'} লিখুন"></div>
+            <div class="withdraw-form-group"><label>পরিমাণ (কয়েন) - সর্বনিম্ন: ${method.min || 0}</label><input type="number" id="coins" min="${method.min || 0}"></div>
+            <p>আপনি পাবেন: <strong id="fiatVal">0</strong> ${type.toUpperCase()}</p>
+            <button id="confirmW" class="action-btn" style="width:100%;">রিকোয়েস্ট সাবমিট</button>
           </div>`;
         document.getElementById('withdraw-flow-container').innerHTML = formHtml;
         document.querySelector('#withdraw-flow-modal .close-modal').onclick = () => hideModal('withdraw-flow-modal');
@@ -997,8 +1072,8 @@
         
         document.getElementById('confirmW').addEventListener('click', async () => {
           let account = document.getElementById('acc').value.trim(), coinAmount = parseFloat(coinsInp.value);
-          if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { showAlert(`Minimum ${method.min || 0} coins required`); return; }
-          if (coinAmount > userState.balance) { showAlert("Insufficient balance"); return; }
+          if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { showAlert(`সর্বনিম্ন ${method.min || 0} কয়েন প্রয়োজন`); return; }
+          if (coinAmount > userState.balance) { showAlert("পর্যাপ্ত ব্যালেন্স নেই"); return; }
           
           await db.ref(`users/${tgUser.id}/balance`).set(userState.balance - coinAmount);
           userState.balance -= coinAmount;
@@ -1010,8 +1085,8 @@
             timestamp: firebase.database.ServerValue.TIMESTAMP, type
           });
           await addHistory('Withdrawal Request', `${method.name}`, -coinAmount, 'Pending');
-          await sendAdminNotification(`💰 Withdrawal Request\nUser: ${userState.firstName}\nAmount: ${coinAmount} Coins\nMethod: ${method.name}`);
-          showAlert("✅ Withdraw request submitted!");
+          await sendAdminNotification(`💰 উইথড্র রিকোয়েস্ট\nইউজার: ${userState.firstName}\nপরিমাণ: ${coinAmount} কয়েন\nমেথড: ${method.name}`);
+          showAlert("✅ উইথড্র রিকোয়েস্ট সাবমিট হয়েছে!");
           hideModal('withdraw-flow-modal'); hideModal('wallet-modal');
           renderAll(); renderPendingWithdrawBanner();
         });
@@ -1031,15 +1106,15 @@
     rejectedSnap.forEach(r => items.push({ ...r.val(), status: 'Rejected' }));
     items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     
-    let html = `<div class="modal-header"><h3>📋 Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
-    if (!items.length) html += "<p style='text-align:center; padding:40px;'>No withdrawal history</p>";
+    let html = `<div class="modal-header"><h3>📋 উইথড্র হিস্টোরি</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
+    if (!items.length) html += "<p style='text-align:center; padding:40px;'>কোনো উইথড্র হিস্টোরি নেই</p>";
     items.forEach(req => {
       let date = new Date(req.timestamp).toLocaleString(), statusClass = req.status.toLowerCase();
       let rate = req.type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
       let fiatAmount = (req.amount * rate).toFixed(2), currency = req.type === 'bdt' ? 'BDT' : 'USDT';
       html += `<div class="history-item-premium ${statusClass}">
-        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} Coins</span></div>
-        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
+        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} কয়েন</span></div>
+        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status === 'Pending' ? 'পেন্ডিং' : (req.status === 'Completed' ? 'সম্পন্ন' : 'বাতিল')}</span></div>
         <small>${date}</small>
         ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">❌ ${escapeHtml(req.rejectReason)}</p>` : ''}
         ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">🏦 ${escapeHtml(req.account)}</p>` : ''}
