@@ -21,58 +21,101 @@
     body.dark-theme { background-color: #1B2631; color: #FDFEFE; --surface: #283747; --border: #566573; --shadow: 0 8px 20px rgba(0,0,0,0.2); }
     #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; display: none; overflow-x: hidden; }
     
-    /* ========== PREMIUM LOADING SCREEN ========== */
+    /* ========== PREMIUM LOADING SCREEN (NO SPIN - COLOR ROTATION) ========== */
     #loadingScreen {
       position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background: #0b1120;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 9999;
     }
-    .loader-container {
-      text-align: center;
-    }
-    .progress-circle {
-      width: 140px;
-      height: 140px;
+    .circle {
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
-      border: 8px solid rgba(255,255,255,0.1);
-      border-top: 8px solid #38bdf8;
-      animation: spin 1s linear infinite;
+      background: conic-gradient(#00f, #0ff, #0f0, #ff0, #f00, #f0f, #00f);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      color: #fff;
-      font-weight: bold;
-      box-shadow: 0 0 30px rgba(56,189,248,0.6);
-      margin: 0 auto 20px;
+      animation: rotateColors 2s linear infinite;
     }
-    @keyframes spin {
+    .inner {
+      width: 130px;
+      height: 130px;
+      background: #0b1120;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 32px;
+      font-weight: bold;
+    }
+    @keyframes rotateColors {
       100% { transform: rotate(360deg); }
     }
-    .loading-text {
-      color: #94a3b8;
-      font-size: 1rem;
+    
+    /* ========== PREMIUM POPUP SYSTEM (SMALL BOX) ========== */
+    .popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      z-index: 9999;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    body.dark-theme .popup {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+    }
+    .popup.hidden { display: none; }
+    .popup h3 {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      color: #E74C3C;
+    }
+    .popup img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 10px auto;
+      border: 2px solid #E74C3C;
+    }
+    .popup p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+      white-space: pre-line;
+    }
+    .popup .highlight {
+      color: #E74C3C;
+      font-weight: 600;
+    }
+    .popup button {
       margin-top: 20px;
-      letter-spacing: 2px;
+      padding: 12px;
+      width: 100%;
+      background: linear-gradient(135deg, #E74C3C, #F39C12);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
     }
-    .loading-logo {
-      color: #38bdf8;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 30px;
-      text-shadow: 0 0 20px rgba(56,189,248,0.5);
-    }
-    .loading-logo i {
-      color: #F39C12;
-      margin-right: 8px;
+    .popup .btn-secondary {
+      background: #64748B;
+      margin-top: 8px;
     }
     
     .top-bar {
@@ -327,83 +370,27 @@
       background: #FEF2F2; border: 2px solid #EF4444; border-radius: 24px; padding: 30px 20px; text-align: center; margin: 20px 0;
     }
     .device-blocked-message i { font-size: 3rem; color: #EF4444; margin-bottom: 16px; }
-    
-    /* Custom Popup Modal */
-    .custom-popup-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 3000;
-    }
-    .custom-popup {
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      border-radius: 32px;
-      padding: 30px 24px;
-      width: 90%;
-      max-width: 380px;
-      text-align: center;
-      border: 1px solid rgba(56,189,248,0.3);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-    .custom-popup i {
-      font-size: 3.5rem;
-      color: #38bdf8;
-      margin-bottom: 16px;
-    }
-    .custom-popup h3 {
-      color: white;
-      font-size: 1.3rem;
-      margin-bottom: 16px;
-    }
-    .custom-popup p {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-    .custom-popup .highlight {
-      color: #38bdf8;
-      font-weight: 600;
-    }
-    .custom-popup .warning {
-      color: #F59E0B;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .custom-popup-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #38bdf8, #2563eb);
-      border: none;
-      border-radius: 40px;
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 24px;
-    }
-    .custom-popup-btn.cancel {
-      background: rgba(255,255,255,0.1);
-      margin-top: 12px;
-    }
   </style>
 </head>
 <body>
 
-<!-- ========== PREMIUM LOADING SCREEN ========== -->
+<!-- ========== PREMIUM LOADING SCREEN (COLOR ROTATION, NO SPIN) ========== -->
 <div id="loadingScreen">
-  <div class="loader-container">
-    <div class="loading-logo">
-      <i class="fas fa-crown"></i> Earnify
-    </div>
-    <div class="progress-circle">
+  <div class="circle">
+    <div class="inner">
       <span id="percent">0%</span>
     </div>
-    <div class="loading-text">লোড হচ্ছে...</div>
+  </div>
+</div>
+
+<!-- ========== PREMIUM POPUP SYSTEM (SMALL BOX) ========== -->
+<div id="popupBox" class="popup hidden">
+  <h3 id="popupTitle">জরুরি নোটিশ</h3>
+  <img id="popupUserPhoto" src="https://via.placeholder.com/60" style="display:none;">
+  <p id="popupUserName"></p>
+  <p id="popupMessage"></p>
+  <div id="popupButtons">
+    <button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>
   </div>
 </div>
 
@@ -433,7 +420,7 @@
       <div id="pending-withdraw-banner-container"></div>
     </div>
     
-    <!-- WEB TASK PAGE (Renamed from Bonus Tasks) -->
+    <!-- WEB TASK PAGE -->
     <div id="web-task-page" class="page">
       <h3 style="margin-bottom:16px;"><i class="fas fa-globe" style="color:#E74C3C;"></i> Web Tasks</h3>
       <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">ওয়েব টাস্ক সম্পন্ন করে কয়েন অর্জন করুন!</p>
@@ -467,11 +454,6 @@
   </nav>
 </div>
 
-<!-- CUSTOM POPUP OVERLAY -->
-<div id="customPopupOverlay" class="custom-popup-overlay" style="display: none;">
-  <div class="custom-popup" id="customPopupContent"></div>
-</div>
-
 <div id="wallet-modal" class="modal-overlay">
   <div class="modal-container">
     <div class="modal-header"><h3>💰 Wallet</h3><span class="close-modal">&times;</span></div>
@@ -480,9 +462,6 @@
 </div>
 <div id="withdraw-flow-modal" class="modal-overlay">
   <div class="modal-container" id="withdraw-flow-container"></div>
-</div>
-<div id="global-popup" class="modal-overlay">
-  <div class="modal-container" id="global-popup-body"></div>
 </div>
 
 <script>
@@ -493,6 +472,9 @@
   let userState = {};
   let tgUser = {};
   
+  // Default Bot Username
+  const DEFAULT_BOT_USERNAME = "video_group_link_bot";
+  
   let adCounts = { monetag: 0, gigapub: 0, adsgram: 0, adexium: 0 };
   let breakEnds = { monetag: 0, gigapub: 0, adsgram: 0, adexium: 0 };
   let adLocks = { monetag: false, gigapub: false, adsgram: false, adexium: false };
@@ -502,31 +484,73 @@
   // Web Task Timer System
   let taskStartTime = 0;
   let currentTask = null;
-  let taskCheckInterval = null;
+  let pendingTask = null;
+  let popupTimeout = null;
   
   function formatTime(sec){ let m = Math.floor(sec/60), s = sec%60; return `${m}:${s<10?'0':''}${s}`; }
   function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   function showModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'flex'; }
   function hideModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'none'; }
   
-  // Custom Popup Functions
-  function showCustomPopup(content) {
-    document.getElementById('customPopupContent').innerHTML = content;
-    document.getElementById('customPopupOverlay').style.display = 'flex';
+  // ========== PREMIUM POPUP SYSTEM ==========
+  function showPopup(title, message, options = {}) {
+    const popup = document.getElementById('popupBox');
+    const titleEl = document.getElementById('popupTitle');
+    const photoEl = document.getElementById('popupUserPhoto');
+    const nameEl = document.getElementById('popupUserName');
+    const messageEl = document.getElementById('popupMessage');
+    const buttonsDiv = document.getElementById('popupButtons');
+    
+    titleEl.innerText = title || 'জরুরি নোটিশ';
+    messageEl.innerText = message;
+    
+    // User info
+    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
+    const userPhoto = userState.photoUrl || 'https://via.placeholder.com/60';
+    
+    if (options.showUser !== false) {
+      photoEl.src = userPhoto;
+      photoEl.style.display = 'block';
+      nameEl.innerText = userName;
+    } else {
+      photoEl.style.display = 'none';
+      nameEl.innerText = '';
+    }
+    
+    // Buttons
+    if (options.buttons) {
+      buttonsDiv.innerHTML = '';
+      options.buttons.forEach(btn => {
+        const button = document.createElement('button');
+        button.innerText = btn.text;
+        button.onclick = btn.onClick;
+        if (btn.className) button.className = btn.className;
+        buttonsDiv.appendChild(button);
+      });
+    } else {
+      buttonsDiv.innerHTML = '<button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>';
+    }
+    
+    popup.classList.remove('hidden');
+    
+    // Auto close after 15 seconds if no custom buttons
+    if (!options.buttons && options.autoClose !== false) {
+      if (popupTimeout) clearTimeout(popupTimeout);
+      popupTimeout = setTimeout(() => {
+        closePopup();
+      }, 15000);
+    }
   }
   
-  function hideCustomPopup() {
-    document.getElementById('customPopupOverlay').style.display = 'none';
-  }
+  window.closePopup = function() {
+    document.getElementById('popupBox').classList.add('hidden');
+    if (popupTimeout) {
+      clearTimeout(popupTimeout);
+      popupTimeout = null;
+    }
+  };
   
-  function showAlert(msg, cb){ 
-    let body = document.getElementById('global-popup-body'); 
-    if(body){ 
-      body.innerHTML = `<div style="text-align:center; padding:20px;"><h3>Notification</h3><p style="white-space:pre-line;">${msg}</p><button class="action-btn close-modal">OK</button></div>`; 
-      showModal('global-popup'); 
-      document.querySelector('#global-popup .close-modal').onclick = () => { hideModal('global-popup'); if(cb) cb(); }; 
-    } else { alert(msg); if(cb) cb(); } 
-  }
+  window.showPopup = showPopup;
   
   async function addHistory(type, name, reward, status, message = ""){
     await db.ref(`users/${tgUser.id}/history`).push({ type, name, reward, status, message, timestamp: firebase.database.ServerValue.TIMESTAMP });
@@ -665,7 +689,10 @@
   }
   
   async function handleAdWatch(platform) {
-    if (adLocks[platform]) { showAlert("⏳ Please wait..."); return; }
+    if (adLocks[platform]) { 
+      showPopup('⏳ অপেক্ষা করুন', 'অনুগ্রহ করে অপেক্ষা করুন, অ্যাড প্রসেস হচ্ছে...');
+      return; 
+    }
     const config = {
       monetag: { reward: parseFloat(appConfig.monetagReward) || 10, dailyLimit: parseInt(appConfig.monetagDailyLimit) || 25, breakAfter: parseInt(appConfig.monetagBreakAfter) || 5, breakDuration: parseInt(appConfig.monetagBreakDuration) || 300, taskTime: 15 },
       gigapub: { reward: parseFloat(appConfig.gigapubReward) || 10, dailyLimit: parseInt(appConfig.gigapubDailyLimit) || 25, breakAfter: parseInt(appConfig.gigapubBreakAfter) || 5, breakDuration: parseInt(appConfig.gigapubBreakDuration) || 300, taskTime: 15 },
@@ -674,7 +701,10 @@
     }[platform] || { reward: 10, dailyLimit: 25, breakAfter: 5, breakDuration: 300, taskTime: 15 };
     
     const watched = userState[`${platform}AdCount`] || 0;
-    if (watched >= config.dailyLimit) { showAlert(`Daily limit reached`); return; }
+    if (watched >= config.dailyLimit) { 
+      showPopup('❌ লিমিট শেষ', 'আজকের অ্যাড লিমিট শেষ হয়ে গেছে।');
+      return; 
+    }
     
     adLocks[platform] = true;
     adStartTime[platform] = Date.now();
@@ -683,7 +713,7 @@
     try {
       if (platform === 'monetag') success = await runMonetagAd();
       else if (platform === 'gigapub') success = await runGigapubAd();
-      else { showAlert(`${platform} ad would play here.`); success = true; }
+      else { success = true; }
     } catch(e) { console.warn(e); }
     
     const timeSpent = (Date.now() - adStartTime[platform]) / 1000;
@@ -704,16 +734,16 @@
       await addHistory('Watch Ad', `Watched ${platform} Ad`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, `${platform} Ad`);
       await sendAdminNotification(`📺 ${platform} Ad Watched\nUser: ${userState.firstName}\nReward: ${reward} Coins`);
-      showAlert(`✅ +${reward} Coins earned!`);
+      showPopup('✅ সফল!', `+${reward} কয়েন অর্জন করেছেন!`);
     } else {
-      showAlert(timeSpent < config.taskTime ? `❌ Stay for ${config.taskTime}s. Time: ${Math.floor(timeSpent)}s` : "❌ Ad failed.");
+      showPopup('❌ ব্যর্থ', timeSpent < config.taskTime ? `আপনি ${config.taskTime} সেকেন্ড অপেক্ষা করেননি।` : 'অ্যাড লোড করা যায়নি।');
     }
     adLocks[platform] = false;
     renderAll();
     renderPremiumAdCard();
   }
 
-  // ========== WEB TASK SYSTEM WITH POPUP & TIMER ==========
+  // ========== WEB TASK SYSTEM WITH POPUP ==========
   async function loadWebTasks() {
     let snap = await db.ref('config/bonusTasks').once('value');
     let tasksData = snap.val() || {};
@@ -722,53 +752,30 @@
     return tasks;
   }
   
-  // STEP 1: START TASK POPUP
   function startTaskPopup(task) {
-    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
+    pendingTask = task;
     
-    const content = `
-      <i class="fas fa-hourglass-start"></i>
-      <h3>⏰ Notification</h3>
-      <p><span class="highlight">${userName}</span></p>
-      <p>আপনি এখন <strong>OK</strong> বাটন ক্লিক করলেই আপনার টাইমার শুরু হয়ে যাবে!</p>
-      <p style="margin-top:16px;"><strong>📋 ${escapeHtml(task.name)}</strong></p>
-      <p>⏱️ নির্ধারিত সময়: <span class="highlight">${task.taskTime || 30} সেকেন্ড</span></p>
-      <p>💰 পুরস্কার: <span class="highlight">${task.reward} কয়েন</span></p>
-      <p class="warning">⚠️ ${task.taskTime || 30} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।</p>
-      <button class="custom-popup-btn" onclick="window.confirmStartTask()">✅ OK, টাইমার শুরু করুন</button>
-      <button class="custom-popup-btn cancel" onclick="window.cancelTaskPopup()">❌ বাতিল</button>
-    `;
+    const message = `আপনি OK ক্লিক করলে টাইমার শুরু হবে\n\n📋 ${task.name}\n⏱️ সময়: ${task.taskTime || 30} সেকেন্ড\n💰 ${task.reward} কয়েন\n\n⚠️ ${task.taskTime || 30} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।`;
     
-    showCustomPopup(content);
+    showPopup('⏰ টাইমার শুরু', message, {
+      buttons: [
+        { text: '✅ OK, শুরু করুন', onClick: () => { closePopup(); confirmStartTask(); } },
+        { text: '❌ বাতিল', onClick: () => { closePopup(); pendingTask = null; }, className: 'btn-secondary' }
+      ]
+    });
   }
   
-  // Store pending task for popup
-  let pendingTask = null;
-  
-  window.startTaskPopup = function(task) {
-    pendingTask = task;
-    startTaskPopup(task);
-  };
-  
-  window.confirmStartTask = function() {
-    hideCustomPopup();
+  function confirmStartTask() {
     if (pendingTask) {
       startTask(pendingTask);
       pendingTask = null;
     }
-  };
+  }
   
-  window.cancelTaskPopup = function() {
-    hideCustomPopup();
-    pendingTask = null;
-  };
-  
-  // STEP 2: START TASK (TIMER START)
   function startTask(task) {
     taskStartTime = Date.now();
     currentTask = task;
     
-    // Save timer to Firebase
     db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).set({
       startTime: taskStartTime,
       taskName: task.name,
@@ -776,7 +783,6 @@
       reward: task.reward
     });
     
-    // Open link in new tab
     if (task.link) {
       window.open(task.link, '_blank');
     }
@@ -784,64 +790,35 @@
     renderWebTasksPage();
   }
   
-  // STEP 3: CHECK TASK COMPLETION (when user returns)
   function checkTaskCompletion() {
     if (!currentTask) return false;
     
     let spent = Math.floor((Date.now() - taskStartTime) / 1000);
-    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
     const requiredTime = currentTask.taskTime || 30;
     
     if (spent < requiredTime) {
-      // FAILED - Not enough time
-      const content = `
-        <i class="fas fa-times-circle" style="color: #EF4444;"></i>
-        <h3 style="color: #EF4444;">❌ টাস্ক অসম্পূর্ণ</h3>
-        <p><span class="highlight">${userName}</span></p>
-        <p>আপনি টাস্ক টি সম্পূর্ণ করতে পারেননি!</p>
-        <p style="margin-top:16px;">📋 নির্ধারিত সময়: <span class="highlight">${requiredTime} সেকেন্ড</span></p>
-        <p>⏱️ আপনি ছিলেন: <span class="highlight">${spent} সেকেন্ড</span></p>
-        <p class="warning">😔 আপনি কোনো কয়েন পাবেন না।</p>
-        <button class="custom-popup-btn" onclick="window.closeTaskFailedPopup()">ঠিক আছে</button>
-      `;
+      showPopup('❌ টাস্ক অসম্পূর্ণ', `আপনি নির্ধারিত সময়ের আগে বের হয়েছেন\nতাই কোনো কয়েন পাবেন না\n\nনির্ধারিত সময়: ${requiredTime} সেকেন্ড\nআপনি ছিলেন: ${spent} সেকেন্ড`);
       
-      showCustomPopup(content);
-      
-      // Remove timer from Firebase
       db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentTask.key}`).remove();
-      
       currentTask = null;
       taskStartTime = 0;
       renderWebTasksPage();
       return false;
     }
     
-    // SUCCESS - Show success popup with countdown
     showSuccessPopup(currentTask);
     return true;
   }
   
-  window.closeTaskFailedPopup = function() {
-    hideCustomPopup();
-  };
-  
-  // STEP 4: SUCCESS POPUP + COUNTDOWN
   function showSuccessPopup(task) {
-    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
     let countdown = 5;
+    const requiredTime = task.taskTime || 30;
     
     const updatePopup = () => {
-      const content = `
-        <i class="fas fa-check-circle" style="color: #10B981;"></i>
-        <h3 style="color: #10B981;">✅ টাস্ক সম্পূর্ণ!</h3>
-        <p><span class="highlight">${userName}</span></p>
-        <p>আপনি সফল ভাবে টাস্ক টি সম্পূর্ণ করেছেন!</p>
-        <p style="margin-top:16px;">💰 পুরস্কার: <span class="highlight">${task.reward} কয়েন</span></p>
-        <p style="font-size:2rem; font-weight:700; margin:16px 0; color:#38bdf8;">${countdown}</p>
-        <p>সেকেন্ড পরে কয়েন ক্লেইম করতে পারবেন</p>
-        <button class="custom-popup-btn" disabled style="opacity:0.5;">অপেক্ষা করুন...</button>
-      `;
-      showCustomPopup(content);
+      showPopup('✅ টাস্ক সম্পূর্ণ!', `আপনি সফল ভাবে টাস্ক সম্পূর্ণ করেছেন\n\n💰 পুরস্কার: ${task.reward} কয়েন\n⏱️ সময়: ${requiredTime} সেকেন্ড\n\n${countdown} সেকেন্ড পরে কয়েন পাবেন`, {
+        buttons: [],
+        autoClose: false
+      });
     };
     
     updatePopup();
@@ -855,17 +832,13 @@
       
       if (countdown <= 0) {
         clearInterval(interval);
-        hideCustomPopup();
+        closePopup();
         giveReward(task);
       }
     }, 1000);
   }
   
-  // STEP 5: GIVE REWARD
   async function giveReward(task) {
-    const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
-    
-    // Save completion
     let completionKey = db.ref(`users/${tgUser.id}/bonusTaskCompletions`).push().key;
     await db.ref(`users/${tgUser.id}/bonusTaskCompletions/${completionKey}`).set({
       taskId: task.key,
@@ -874,10 +847,8 @@
       timestamp: Date.now()
     });
     
-    // Remove timer
     await db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).remove();
     
-    // Update user balance
     userState.earningWallet = (userState.earningWallet || 0) + task.reward;
     userState.totalEarned = (userState.totalEarned || 0) + task.reward;
     await db.ref(`users/${tgUser.id}`).update({
@@ -885,22 +856,13 @@
       totalEarned: userState.totalEarned
     });
     
-    // Update task completion count
     await db.ref(`config/bonusTasks/${task.key}/completions`).transaction(v => (v || 0) + 1);
     
     await addHistory('Web Task', task.name, task.reward, 'Completed');
     await processReferralEarnings(tgUser.id, task.reward, 'Web Task');
-    await sendAdminNotification(`✅ Web Task Completed\nUser: ${userName}\nTask: ${task.name}\nReward: ${task.reward} Coins`);
+    await sendAdminNotification(`✅ Web Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${task.reward} Coins`);
     
-    // Show final success message
-    const content = `
-      <i class="fas fa-gift" style="color: #F39C12;"></i>
-      <h3>🎉 অভিনন্দন!</h3>
-      <p><span class="highlight">${userName}</span></p>
-      <p>আপনি <strong>${task.reward} কয়েন</strong> পেয়েছেন!</p>
-      <button class="custom-popup-btn" onclick="window.closeSuccessPopup()">🎁 দারুণ!</button>
-    `;
-    showCustomPopup(content);
+    showPopup('🎉 অভিনন্দন!', `আপনি ${task.reward} কয়েন পেয়েছেন!`);
     
     currentTask = null;
     taskStartTime = 0;
@@ -909,11 +871,6 @@
     renderWebTasksPage();
   }
   
-  window.closeSuccessPopup = function() {
-    hideCustomPopup();
-  };
-  
-  // Check task when page becomes visible
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && currentTask) {
       checkTaskCompletion();
@@ -925,9 +882,6 @@
       checkTaskCompletion();
     }
   });
-  
-  // Check task manually
-  window.checkTaskCompletion = checkTaskCompletion;
   
   async function renderWebTasksPage() {
     let tasks = await loadWebTasks();
@@ -1053,40 +1007,49 @@
     
     let streak = (userState.checkInStreak || 0) + 1;
     let reward = appConfig.dailyCheckinReward || 50;
-    container.innerHTML = `<div class="daily-checkin-card"><div><h3>দিন ${streak} চেক-ইন</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">🎁 ${reward} কয়েন সংগ্রহ</button></div>`;
+    container.innerHTML = `<div class="daily-checkin-card"><div><h3>Day ${streak} Check-in</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">🎁 Claim ${reward} Coins</button></div>`;
     
     document.getElementById('start-checkin-btn').onclick = async () => {
       userState.lastCheckInDate = today; userState.checkInStreak = streak;
       userState.earningWallet = (userState.earningWallet || 0) + reward;
       userState.totalEarned = (userState.totalEarned || 0) + reward;
       await db.ref(`users/${tgUser.id}`).update({ lastCheckInDate: today, checkInStreak: streak, earningWallet: userState.earningWallet, totalEarned: userState.totalEarned });
-      await addHistory('Daily Check-in', `দিন ${streak} পুরস্কার`, reward, 'Completed');
+      await addHistory('Daily Check-in', `Day ${streak} Reward`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, 'Daily Check-in');
-      showAlert(`🎉 +${reward} কয়েন যোগ হয়েছে!`);
+      showPopup('✅ চেক-ইন সফল!', `+${reward} কয়েন যোগ হয়েছে!`);
       renderAll();
     };
   }
   
+  // ========== REFERRAL SYSTEM (FIXED) ==========
+  function getRefLink(userId) {
+    const botUsername = appConfig.botUsername || DEFAULT_BOT_USERNAME;
+    return `https://t.me/${botUsername}?start=${userId}`;
+  }
+  
+  function copyRef(link) {
+    navigator.clipboard.writeText(link);
+    showPopup('✅ কপি হয়েছে', 'রেফারেল লিংক কপি করা হয়েছে!');
+  }
+  
   function renderReferralSection() {
-    let botUsername = appConfig.botUsername || '';
-    if (!botUsername) { document.getElementById('referral-section').innerHTML = '<p style="text-align:center; padding:20px;">বট ইউজারনেম কনফিগার করা হয়নি।</p>'; return; }
-    let link = `https://t.me/${botUsername}?start=${tgUser.id}`;
+    let link = getRefLink(tgUser.id);
     
     let container = document.getElementById('referral-section');
     if (container) {
       container.innerHTML = `
         <div class="referral-premium-card">
-          <div class="referral-premium-header"><i class="fas fa-gift"></i><h3>রেফার করে আরও আয় করুন!</h3></div>
-          <p style="margin-bottom:12px; font-size:0.85rem;">আপনার লিংক শেয়ার করে ${appConfig.referralPercent || 0}% কমিশন অর্জন করুন</p>
-          <div class="referral-premium-link-box"><input id="ref-link" value="${link}" readonly><button id="copy-ref"><i class="fas fa-copy"></i> কপি</button></div>
+          <div class="referral-premium-header"><i class="fas fa-gift"></i><h3>Refer & Earn More!</h3></div>
+          <p style="margin-bottom:12px; font-size:0.85rem;">Share your link and earn ${appConfig.referralPercent || 0}% commission</p>
+          <div class="referral-premium-link-box"><input id="ref-link" value="${link}" readonly><button id="copy-ref"><i class="fas fa-copy"></i> Copy</button></div>
           <div class="referral-premium-stats">
-            <div class="referral-stat"><div class="value">${userState.referrals || 0}</div><div class="label">রেফারেল</div></div>
-            <div class="referral-stat"><div class="value">${appConfig.referralPercent || 0}%</div><div class="label">কমিশন</div></div>
-            <div class="referral-stat"><div class="value">${appConfig.referralBonus || 100}</div><div class="label">বোনাস</div></div>
+            <div class="referral-stat"><div class="value">${userState.referrals || 0}</div><div class="label">Referrals</div></div>
+            <div class="referral-stat"><div class="value">${appConfig.referralPercent || 0}%</div><div class="label">Commission</div></div>
+            <div class="referral-stat"><div class="value">${appConfig.referralBonus || 100}</div><div class="label">Bonus</div></div>
           </div>
         </div>
       `;
-      document.getElementById('copy-ref').onclick = () => { navigator.clipboard.writeText(link); showAlert("✅ রেফারেল লিংক কপি হয়েছে!"); };
+      document.getElementById('copy-ref').onclick = () => copyRef(link);
     }
   }
   
@@ -1103,10 +1066,10 @@
     
     container.innerHTML = `
       <div class="pending-withdraw-banner">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#F59E0B;"></i><h4 style="color:#92400E;">উইথড্র পেন্ডিং</h4></div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#F59E0B;"></i><h4 style="color:#92400E;">Withdrawal Pending</h4></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.85rem;">
-          <div><strong>পরিমাণ:</strong> ${req.amount} কয়েন</div><div><strong>মূল্য:</strong> ${fiatAmount} ${currency}</div>
-          <div><strong>মেথড:</strong> ${escapeHtml(req.method)}</div><div><strong>তারিখ:</strong> ${new Date(req.timestamp).toLocaleDateString()}</div>
+          <div><strong>Amount:</strong> ${req.amount} Coins</div><div><strong>Value:</strong> ${fiatAmount} ${currency}</div>
+          <div><strong>Method:</strong> ${escapeHtml(req.method)}</div><div><strong>Date:</strong> ${new Date(req.timestamp).toLocaleDateString()}</div>
         </div>
       </div>
     `;
@@ -1114,15 +1077,18 @@
   
   async function moveToBalance() {
     let min = appConfig.minWithdrawBalance || 100;
-    if ((userState.earningWallet || 0) < min) { showAlert(`সর্বনিম্ন ${min} কয়েন প্রয়োজন।`); return; }
+    if ((userState.earningWallet || 0) < min) { 
+      showPopup('❌ অপর্যাপ্ত ব্যালেন্স', `সর্বনিম্ন ${min} কয়েন প্রয়োজন।`);
+      return; 
+    }
     let amount = userState.earningWallet;
     await db.ref(`users/${tgUser.id}/balance`).transaction(v => (v||0) + amount);
     await db.ref(`users/${tgUser.id}/earningWallet`).set(0);
     userState.balance = (userState.balance || 0) + amount;
     userState.earningWallet = 0;
-    await addHistory('Move to Balance', 'আর্নিং ওয়ালেট থেকে স্থানান্তর', amount, 'Completed');
+    await addHistory('Move to Balance', 'Moved from earning wallet', amount, 'Completed');
     renderAll();
-    showAlert(`✅ ${amount} কয়েন স্থানান্তরিত হয়েছে!`);
+    showPopup('✅ স্থানান্তর সফল!', `${amount} কয়েন মেইন ব্যালেন্সে স্থানান্তরিত হয়েছে!`);
   }
   
   async function loadUserData() {
@@ -1130,7 +1096,7 @@
     
     if (data && data.blocked === true) {
       document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>অ্যাকাউন্ট ব্লক</h3><p>আপনার অ্যাকাউন্ট ব্লক করা হয়েছে।</p></div>`;
+      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-ban"></i><h3>Account Blocked</h3><p>Your account has been blocked.</p></div>`;
       throw new Error("User blocked");
     }
     
@@ -1153,12 +1119,12 @@
         if (bonus > 0) {
           await db.ref(`users/${referralId}/earningWallet`).transaction(b => (b||0) + bonus);
           await db.ref(`users/${referralId}/totalEarned`).transaction(v => (v||0) + bonus);
-          await db.ref(`users/${referralId}/history`).push({ type: 'Referral Bonus', name: `নতুন রেফারেল: ${tgUser.first_name}`, reward: bonus, status: 'Completed', timestamp: firebase.database.ServerValue.TIMESTAMP });
+          await db.ref(`users/${referralId}/history`).push({ type: 'Referral Bonus', name: `New referral: ${tgUser.first_name}`, reward: bonus, status: 'Completed', timestamp: firebase.database.ServerValue.TIMESTAMP });
         }
         await db.ref(`users/${referralId}/referrals`).transaction(r => (r||0) + 1);
-        await sendAdminNotification(`👥 নতুন রেফারেল\nইউজার: ${tgUser.first_name} ${referralId} এর মাধ্যমে জয়েন করেছেন${bonus > 0 ? '\nবোনাস: ' + bonus + ' কয়েন' : ''}`);
+        await sendAdminNotification(`👥 New Referral\nUser: ${tgUser.first_name} joined via ${referralId}${bonus > 0 ? '\nBonus: ' + bonus + ' Coins' : ''}`);
       }
-      await sendAdminNotification(`🆕 নতুন ইউজার জয়েন করেছেন!\n👤 ${tgUser.first_name}\n🆔 ${tgUser.id}`);
+      await sendAdminNotification(`🆕 New User Joined!\n👤 ${tgUser.first_name}\n🆔 ${tgUser.id}`);
     }
     
     let today = new Date().toISOString().slice(0,10);
@@ -1201,11 +1167,6 @@
     appConfig = configSnap.val() || {};
     appConfig.adminChatId = appConfig.adminChatId || '8705098472';
     
-    if (!appConfig.botToken || !appConfig.botUsername) {
-      document.getElementById('loadingScreen').innerHTML = `<div style="text-align:center; padding:40px; color:white;"><i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#F59E0B;"></i><h3>সেটআপ প্রয়োজন</h3><p>অ্যাপটি সম্পূর্ণ কনফিগার করা হয়নি।</p></div>`;
-      return;
-    }
-    
     await enforceDeviceLock(tgUser.id);
     await loadUserData();
     
@@ -1214,7 +1175,7 @@
     renderAll();
     renderWebTasksPage();
     
-    // Premium Loading Animation
+    // Premium Loading Animation (1-100%)
     let p = 0;
     const percentEl = document.getElementById('percent');
     const loadingScreen = document.getElementById('loadingScreen');
@@ -1233,13 +1194,15 @@
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
       setTimeout(() => {
-        let imgHtml = sitePopup.image ? `<img src="${sitePopup.image}" style="max-width:100%; border-radius:16px; margin:10px 0;">` : '';
-        document.getElementById('global-popup-body').innerHTML = `<div style="text-align:center;"><h2>${escapeHtml(sitePopup.title || 'স্বাগতম')}</h2>${imgHtml}<p>${escapeHtml(sitePopup.description || '')}</p><button class="action-btn close-modal">বন্ধ করুন</button></div>`;
-        showModal('global-popup');
-        document.querySelector('#global-popup .close-modal').onclick = () => hideModal('global-popup');
+        showPopup(sitePopup.title || 'স্বাগতম', sitePopup.description || '', { showUser: false });
       }, 500);
     }
   }
+  
+  // Global functions for onclick handlers
+  window.startTaskPopup = startTaskPopup;
+  window.checkTaskCompletion = checkTaskCompletion;
+  window.closePopup = closePopup;
   
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1261,10 +1224,10 @@
     let bdtImg = 'https://img.icons8.com/color/96/bangladesh.png', usdtImg = 'https://img.icons8.com/color/96/us-dollar.png';
     document.getElementById('wallet-modal-body').innerHTML = `
       <div class="methods-grid-3">
-        <div id="withdraw-bdt-card" class="method-card-item"><img src="${bdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>BDT উইথড্র</p></div>
-        <div id="withdraw-usdt-card" class="method-card-item"><img src="${usdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>USDT উইথড্র</p></div>
+        <div id="withdraw-bdt-card" class="method-card-item"><img src="${bdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>BDT Withdraw</p></div>
+        <div id="withdraw-usdt-card" class="method-card-item"><img src="${usdtImg}" onerror="this.src='https://via.placeholder.com/60'"><p>USDT Withdraw</p></div>
       </div>
-      <button id="view-history-btn" class="action-btn" style="width:100%; margin-top:16px;"><i class="fas fa-history"></i> উইথড্র হিস্টোরি</button>
+      <button id="view-history-btn" class="action-btn" style="width:100%; margin-top:16px;"><i class="fas fa-history"></i> Withdraw History</button>
     `;
     showModal('wallet-modal');
     document.getElementById('withdraw-bdt-card').onclick = () => { hideModal('wallet-modal'); startWithdraw('bdt'); };
@@ -1277,16 +1240,21 @@
   
   window.addEventListener('click', e => { 
     if (e.target.classList?.contains('modal-overlay')) e.target.style.display = 'none';
-    if (e.target.id === 'customPopupOverlay') hideCustomPopup();
   });
   
   async function startWithdraw(type) {
     let minRef = appConfig.withdrawReferralLimit || 0;
-    if ((userState.referrals || 0) < minRef) { showAlert(`উইথড্র করতে সর্বনিম্ন ${minRef} রেফারেল প্রয়োজন।`); return; }
+    if ((userState.referrals || 0) < minRef) { 
+      showPopup('❌ অপর্যাপ্ত রেফারেল', `উইথড্র করতে সর্বনিম্ন ${minRef} রেফারেল প্রয়োজন।`);
+      return; 
+    }
     let methods = type === 'bdt' ? (appConfig.withdrawBDTMethods || []) : (appConfig.withdrawUSDTMethods || []);
-    if (!methods.length) { showAlert("কোনো উইথড্র মেথড নেই"); return; }
+    if (!methods.length) { 
+      showPopup('❌ মেথড নেই', 'কোনো উইথড্র মেথড নেই');
+      return; 
+    }
     
-    let grid = `<div class="modal-header"><h3>${type.toUpperCase()} মেথড নির্বাচন করুন</h3><span class="close-modal">&times;</span></div><div class="methods-grid-3">`;
+    let grid = `<div class="modal-header"><h3>Select ${type.toUpperCase()} Method</h3><span class="close-modal">&times;</span></div><div class="methods-grid-3">`;
     grid += methods.map((m, i) => `<div class="method-card-item" data-idx="${i}"><img src="${m.photo}" onerror="this.src='https://via.placeholder.com/70'"><p style="font-size:0.7rem;">${escapeHtml(m.name)}</p></div>`).join('') + `</div>`;
     
     document.getElementById('withdraw-flow-container').innerHTML = grid;
@@ -1298,10 +1266,10 @@
         let idx = parseInt(el.dataset.idx), method = methods[idx], rate = type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
         let formHtml = `<div class="modal-header"><h3>${escapeHtml(method.name)}</h3><span class="close-modal">&times;</span></div>
           <div style="padding:10px;">
-            <div class="withdraw-form-group"><label>অ্যাকাউন্ট নাম্বার/এড্রেস</label><input id="acc" placeholder="${type === 'bdt' ? 'নাম্বার' : 'এড্রেস'} লিখুন"></div>
-            <div class="withdraw-form-group"><label>পরিমাণ (কয়েন) - সর্বনিম্ন: ${method.min || 0}</label><input type="number" id="coins" min="${method.min || 0}"></div>
-            <p>আপনি পাবেন: <strong id="fiatVal">0</strong> ${type.toUpperCase()}</p>
-            <button id="confirmW" class="action-btn" style="width:100%;">রিকোয়েস্ট সাবমিট</button>
+            <div class="withdraw-form-group"><label>Account Number/Address</label><input id="acc" placeholder="Enter ${type === 'bdt' ? 'Number' : 'Address'}"></div>
+            <div class="withdraw-form-group"><label>Amount (Coins) - Min: ${method.min || 0}</label><input type="number" id="coins" min="${method.min || 0}"></div>
+            <p>You get: <strong id="fiatVal">0</strong> ${type.toUpperCase()}</p>
+            <button id="confirmW" class="action-btn" style="width:100%;">Submit Request</button>
           </div>`;
         document.getElementById('withdraw-flow-container').innerHTML = formHtml;
         document.querySelector('#withdraw-flow-modal .close-modal').onclick = () => hideModal('withdraw-flow-modal');
@@ -1311,8 +1279,14 @@
         
         document.getElementById('confirmW').addEventListener('click', async () => {
           let account = document.getElementById('acc').value.trim(), coinAmount = parseFloat(coinsInp.value);
-          if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { showAlert(`সর্বনিম্ন ${method.min || 0} কয়েন প্রয়োজন`); return; }
-          if (coinAmount > userState.balance) { showAlert("পর্যাপ্ত ব্যালেন্স নেই"); return; }
+          if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { 
+            showPopup('❌ ইনপুট ত্রুটি', `সর্বনিম্ন ${method.min || 0} কয়েন প্রয়োজন`);
+            return; 
+          }
+          if (coinAmount > userState.balance) { 
+            showPopup('❌ অপর্যাপ্ত ব্যালেন্স', 'পর্যাপ্ত ব্যালেন্স নেই');
+            return; 
+          }
           
           await db.ref(`users/${tgUser.id}/balance`).set(userState.balance - coinAmount);
           userState.balance -= coinAmount;
@@ -1324,8 +1298,8 @@
             timestamp: firebase.database.ServerValue.TIMESTAMP, type
           });
           await addHistory('Withdrawal Request', `${method.name}`, -coinAmount, 'Pending');
-          await sendAdminNotification(`💰 উইথড্র রিকোয়েস্ট\nইউজার: ${userState.firstName}\nপরিমাণ: ${coinAmount} কয়েন\nমেথড: ${method.name}`);
-          showAlert("✅ উইথড্র রিকোয়েস্ট সাবমিট হয়েছে!");
+          await sendAdminNotification(`💰 Withdrawal Request\nUser: ${userState.firstName}\nAmount: ${coinAmount} Coins\nMethod: ${method.name}`);
+          showPopup('✅ সাবমিট হয়েছে', 'উইথড্র রিকোয়েস্ট সাবমিট হয়েছে!');
           hideModal('withdraw-flow-modal'); hideModal('wallet-modal');
           renderAll(); renderPendingWithdrawBanner();
         });
@@ -1345,24 +1319,24 @@
     rejectedSnap.forEach(r => items.push({ ...r.val(), status: 'Rejected' }));
     items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     
-    let html = `<div class="modal-header"><h3>📋 উইথড্র হিস্টোরি</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
-    if (!items.length) html += "<p style='text-align:center; padding:40px;'>কোনো উইথড্র হিস্টোরি নেই</p>";
+    let html = `<div class="modal-header"><h3>📋 Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
+    if (!items.length) html += "<p style='text-align:center; padding:40px;'>No withdrawal history</p>";
     items.forEach(req => {
       let date = new Date(req.timestamp).toLocaleString(), statusClass = req.status.toLowerCase();
       let rate = req.type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
       let fiatAmount = (req.amount * rate).toFixed(2), currency = req.type === 'bdt' ? 'BDT' : 'USDT';
       html += `<div class="history-item-premium ${statusClass}">
-        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} কয়েন</span></div>
-        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status === 'Pending' ? 'পেন্ডিং' : (req.status === 'Completed' ? 'সম্পন্ন' : 'বাতিল')}</span></div>
+        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} Coins</span></div>
+        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
         <small>${date}</small>
         ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">❌ ${escapeHtml(req.rejectReason)}</p>` : ''}
         ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">🏦 ${escapeHtml(req.account)}</p>` : ''}
       </div>`;
     });
     html += `</div>`;
-    document.getElementById('global-popup-body').innerHTML = html;
-    showModal('global-popup');
-    document.querySelector('#global-popup .close-modal').onclick = () => hideModal('global-popup');
+    showModal('wallet-modal');
+    document.getElementById('wallet-modal-body').innerHTML = html;
+    document.querySelector('#wallet-modal .close-modal').onclick = () => hideModal('wallet-modal');
   }
   
   initApp();
