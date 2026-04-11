@@ -511,6 +511,31 @@
       background: #FEF2F2; border: 2px solid #EF4444; border-radius: 24px; padding: 30px 20px; text-align: center; margin: 20px 0;
     }
     .device-blocked-message i { font-size: 3rem; color: #EF4444; margin-bottom: 16px; }
+
+    /* NEW WITHDRAW CARD DESIGN */
+    .withdraw-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .withdraw-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .withdraw-status {
+      margin-top: 12px;
+      background: #D1FAE5;
+      padding: 10px;
+      text-align: center;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #059669;
+    }
   </style>
 </head>
 <body>
@@ -594,19 +619,19 @@
       </div>
       <div id="referral-section"></div>
       <div class="stats-grid">
-        <div class="stat-card"><h4>Total Earned</h4><p id="total-earned">0</p></div>
-        <div class="stat-card"><h4>Web Tasks Done</h4><p id="web-tasks-done">0</p></div>
-        <div class="stat-card"><h4>Total Ads</h4><p id="total-ads-watched">0</p></div>
         <div class="stat-card"><h4>Total Referrals</h4><p id="referral-count">0</p></div>
+        <div class="stat-card"><h4>Total Ads</h4><p id="total-ads-watched">0</p></div>
+        <div class="stat-card"><h4>Web Tasks Done</h4><p id="web-tasks-done">0</p></div>
+        <div class="stat-card"><h4>Total Earned</h4><p id="total-earned">0</p></div>
       </div>
     </div>
   </main>
   
   <nav class="bottom-nav">
     <button class="nav-btn" data-page="web-task-page"><i class="fas fa-globe"></i><span>Web</span></button>
-    <button class="nav-btn" data-page="leaderboard-page"><i class="fas fa-trophy"></i><span>Rank</span></button>
-    <button class="nav-btn active home-nav-btn" data-page="home-page"><div class="home-icon-wrapper"><i class="fas fa-home"></i></div><span>Home</span></button>
     <button class="nav-btn" data-page="registration-task-page"><i class="fas fa-clipboard-list"></i><span>Register</span></button>
+    <button class="nav-btn active home-nav-btn" data-page="home-page"><div class="home-icon-wrapper"><i class="fas fa-home"></i></div><span>Home</span></button>
+    <button class="nav-btn" data-page="leaderboard-page"><i class="fas fa-trophy"></i><span>Rank</span></button>
     <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
   </nav>
 </div>
@@ -1013,9 +1038,8 @@
     taskStartTime = Date.now();
     currentTask = task;
     
-    localStorage.setItem('taskStartTime', taskStartTime);
-    localStorage.setItem('currentTaskKey', task.key);
-    localStorage.setItem('currentTaskTime', task.taskTime || 30);
+    localStorage.setItem('taskStart', taskStartTime);
+    localStorage.setItem('taskId', task.key);
     
     db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).set({
       startTime: taskStartTime,
@@ -1031,6 +1055,26 @@
     renderWebTasksPage();
   }
   
+  function completeTask(task) {
+    if (!currentTask) return false;
+    
+    let start = parseInt(localStorage.getItem('taskStart'));
+    let spent = (Date.now() - start) / 1000;
+    
+    if (spent < task.taskTime) {
+      showPopup('Error', 'You left early!');
+      return false;
+    }
+    
+    if (document.hidden) {
+      showPopup('Error', 'Stay on page!');
+      return false;
+    }
+    
+    showSuccessPopup(currentTask);
+    return true;
+  }
+  
   function checkTaskCompletion() {
     if (!currentTask) return false;
     
@@ -1039,8 +1083,8 @@
       return false;
     }
     
-    const savedStartTime = localStorage.getItem('taskStartTime');
-    const savedTaskKey = localStorage.getItem('currentTaskKey');
+    const savedStartTime = localStorage.getItem('taskStart');
+    const savedTaskKey = localStorage.getItem('taskId');
     
     if (!savedStartTime || savedTaskKey !== currentTask.key) {
       showPopup('Error', 'Invalid task session.');
@@ -1055,9 +1099,8 @@
     if (spent < requiredTime) {
       showPopup('Task Incomplete', `You left before completing the time.\n\nRequired: ${requiredTime} seconds\nYou stayed: ${spent} seconds`);
       
-      localStorage.removeItem('taskStartTime');
-      localStorage.removeItem('currentTaskKey');
-      localStorage.removeItem('currentTaskTime');
+      localStorage.removeItem('taskStart');
+      localStorage.removeItem('taskId');
       
       db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentTask.key}`).remove();
       currentTask = null;
@@ -1066,9 +1109,8 @@
       return false;
     }
     
-    localStorage.removeItem('taskStartTime');
-    localStorage.removeItem('currentTaskKey');
-    localStorage.removeItem('currentTaskTime');
+    localStorage.removeItem('taskStart');
+    localStorage.removeItem('taskId');
     
     showSuccessPopup(currentTask);
     return true;
@@ -1204,7 +1246,7 @@
         if (elapsed >= taskTime) {
           buttonHtml = `Claim ${task.reward} Coins`;
           buttonDisabled = false;
-          buttonAction = `window.checkTaskCompletion()`;
+          buttonAction = `window.completeTask(${JSON.stringify(task).replace(/"/g, '&quot;')})`;
         } else {
           let timeSpent = Math.floor(elapsed / 1000);
           buttonHtml = `${timeSpent}/${requiredSeconds}s - Waiting`;
@@ -1424,10 +1466,12 @@
       taskReward: task.reward,
       screenshotLink: screenshotLink,
       status: 'pending',
-      timestamp: firebase.database.ServerValue.TIMESTAMP
+      createdAt: Date.now()
     });
     
-    await db.ref(`users/${tgUser.id}/registrationTaskStatus/${taskKey}`).set('pending_review');
+    await db.ref(`users/${tgUser.id}/regTasks/${taskKey}`).set({
+      status: 'pending'
+    });
     
     await sendAdminNotification(`📋 New Registration Task\nUser: ${userState.firstName}\nTask: ${task.name}\nScreenshot: ${screenshotLink}`);
     
@@ -1692,6 +1736,7 @@
   }
   
   window.startTaskPopup = startTaskPopup;
+  window.completeTask = completeTask;
   window.checkTaskCompletion = checkTaskCompletion;
   window.closePopup = closePopup;
   window.openRegTaskSubmit = openRegTaskSubmit;
@@ -1817,24 +1862,29 @@
     rejectedSnap.forEach(r => items.push({ ...r.val(), status: 'Rejected' }));
     items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     
-    let html = `<div class="modal-header"><h3>Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
+    let html = `<div class="modal-header"><h3>Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;" id="withdraw-history">`;
     if (!items.length) html += "<p style='text-align:center; padding:40px;'>No withdrawal history</p>";
-    items.forEach(req => {
-      let date = new Date(req.timestamp).toLocaleString(), statusClass = req.status.toLowerCase();
-      let rate = req.type === 'bdt' ? (appConfig.coinToBDT || 0.5) : (appConfig.coinToUSDT || 0.004);
-      let fiatAmount = (req.amount * rate).toFixed(2), currency = req.type === 'bdt' ? 'BDT' : 'USDT';
-      html += `<div class="history-item-premium ${statusClass}">
-        <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} Coins</span></div>
-        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
-        <small>${date}</small>
-        ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">Reason: ${escapeHtml(req.rejectReason)}</p>` : ''}
-        ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">Account: ${escapeHtml(req.account)}</p>` : ''}
-      </div>`;
-    });
     html += `</div>`;
     showModal('wallet-modal');
     document.getElementById('wallet-modal-body').innerHTML = html;
     document.querySelector('#wallet-modal .close-modal').onclick = () => hideModal('wallet-modal');
+    
+    renderWithdrawHistory(items);
+  }
+  
+  function renderWithdrawHistory(data) {
+    let html = '';
+    data.forEach(w => {
+      html += `
+      <div class="withdraw-card">
+        <div class="withdraw-row"><span>Coins</span><span>${w.amount}</span></div>
+        <div class="withdraw-row"><span>Method</span><span>${escapeHtml(w.method)}</span></div>
+        <div class="withdraw-row"><span>Date</span><span>${new Date(w.timestamp).toLocaleString()}</span></div>
+        <div class="withdraw-row"><span>Account</span><span>${escapeHtml(w.account)}</span></div>
+        <div class="withdraw-status">✔ ${w.status}</div>
+      </div>`;
+    });
+    document.getElementById('withdraw-history').innerHTML = html || "No Data";
   }
   
   initApp();
