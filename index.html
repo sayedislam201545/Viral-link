@@ -52,11 +52,10 @@
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      background: conic-gradient(#E74C3C, #F39C12, #E74C3C);
+      background: conic-gradient(#ff0000, #ff7a00, #ffd500, #00ff85, #00c3ff, #6a00ff, #ff00c8, #ff0000);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: rotateColors 2s linear infinite;
       box-shadow: 0 0 40px rgba(231, 76, 60, 0.5);
     }
     .inner {
@@ -72,11 +71,8 @@
       font-weight: bold;
       backdrop-filter: blur(4px);
     }
-    @keyframes rotateColors {
-      100% { transform: rotate(360deg); }
-    }
     
-    /* ========== FIXED POPUP (z-index: 3000) ========== */
+    /* ========== FIXED POPUP (z-index: 99999) ========== */
     .popup {
       position: fixed;
       top: 50%;
@@ -89,7 +85,7 @@
       padding: 24px 20px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      z-index: 3000;
+      z-index: 99999;
       border: 1px solid rgba(0,0,0,0.1);
       animation: popupFadeIn 0.3s ease;
     }
@@ -647,7 +643,6 @@
   let popupTimeout = null;
   
   let loadingInterval = null;
-  let currentPercent = 0;
   
   function formatTime(sec){ let m = Math.floor(sec/60), s = sec%60; return `${m}:${s<10?'0':''}${s}`; }
   function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
@@ -747,7 +742,6 @@
     return null;
   }
 
-  // FIXED: Monetag only runs on Monetag
   window.monetagInitialized = false;
   function initMonetag(zoneId) {
     if (window.monetagInitialized) return;
@@ -762,6 +756,9 @@
   }
   
   async function runMonetagAd() {
+    if (typeof window.showGiga === 'function') {
+      delete window.showGiga;
+    }
     let zoneId = appConfig.monetagZoneId || '10806089';
     initMonetag(zoneId);
     for(let i = 0; i < 15; i++) {
@@ -772,9 +769,11 @@
     return false;
   }
   
-  // FIXED: Gigapub only runs on Gigapub
   window.gigapubInitialized = false;
   async function runGigapubAd() {
+    if (window[`show_${appConfig.monetagZoneId}`]) {
+      delete window[`show_${appConfig.monetagZoneId}`];
+    }
     if (!window.gigapubInitialized) {
       window.gigapubInitialized = true;
       await new Promise((resolve) => {
@@ -921,7 +920,6 @@
       if (platform === 'monetag') success = await runMonetagAd();
       else if (platform === 'gigapub') success = await runGigapubAd();
       else { 
-        // FIXED: No fake reward for Adsgram/Adexium
         adLocks[platform] = false;
         renderPremiumAdCard();
         showPopup('Not Available', 'This ad platform is not available yet.');
@@ -929,7 +927,10 @@
       }
     } catch(e) { console.warn(e); }
     
-    // FIXED: Check if user left the page during ad
+    if (!success) {
+      showPopup('Ad Error', 'Ad failed to load. Try again.');
+    }
+    
     if (document.hidden) {
       adLocks[platform] = false;
       renderPremiumAdCard();
@@ -1008,7 +1009,6 @@
     }
   }
   
-  // FIXED: Web task with localStorage security
   function startTask(task) {
     taskStartTime = Date.now();
     currentTask = task;
@@ -1031,9 +1031,13 @@
     renderWebTasksPage();
   }
   
-  // FIXED: Check task completion with localStorage
   function checkTaskCompletion() {
     if (!currentTask) return false;
+    
+    if (document.hidden) {
+      showPopup('Error', 'Stay on page to complete task!');
+      return false;
+    }
     
     const savedStartTime = localStorage.getItem('taskStartTime');
     const savedTaskKey = localStorage.getItem('currentTaskKey');
@@ -1237,7 +1241,6 @@
     container.innerHTML = html;
   }
 
-  // FIXED: Leaderboard only fetches top 10
   async function renderLeaderboard() {
     const container = document.getElementById('leaderboard-container');
     if (!container) return;
@@ -1252,7 +1255,7 @@
       if (!data.blocked) {
         users.push({
           id: u.key,
-          name: `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Anonymous',
+          name: `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'No Data',
           photoUrl: data.photoUrl || 'https://via.placeholder.com/60',
           referrals: data.referrals || 0
         });
@@ -1477,7 +1480,6 @@
     };
   }
   
-  // FIXED: Referral link
   function getRefLink(userId) {
     const botUsername = appConfig.botUsername || DEFAULT_BOT_USERNAME;
     return `https://t.me/${botUsername}?start=${userId}`;
@@ -1509,7 +1511,6 @@
     }
   }
   
-  // FIXED: Real-time withdraw history updates
   async function renderPendingWithdrawBanner() {
     let container = document.getElementById('pending-withdraw-banner-container');
     if (!container) return;
@@ -1620,7 +1621,6 @@
     if (!snap.val()) await db.ref(`deviceLock/${deviceId}`).set(uid);
   }
   
-  // FIXED: Loading animation
   function startLoadingAnimation() {
     const percentEl = document.getElementById('percent');
     const loadingScreen = document.getElementById('loadingScreen');
@@ -1628,41 +1628,24 @@
     
     if (!percentEl || !loadingScreen || !app) return;
     
-    currentPercent = 0;
+    let percent = 0;
     
-    if (loadingInterval) clearInterval(loadingInterval);
+    clearInterval(loadingInterval);
     
     loadingInterval = setInterval(() => {
-      currentPercent++;
+      percent++;
       
-      if (percentEl) {
-        percentEl.innerText = currentPercent + '%';
-      }
+      percentEl.innerText = percent + '%';
       
-      let nextInterval = 60;
-      
-      if (currentPercent > 80) {
-        nextInterval = 100;
-      }
-      if (currentPercent > 95) {
-        nextInterval = 150;
-      }
-      
-      if (loadingInterval) {
+      if (percent >= 100) {
         clearInterval(loadingInterval);
-        loadingInterval = setInterval(arguments.callee, nextInterval);
-      }
-      
-      if (currentPercent >= 100) {
-        clearInterval(loadingInterval);
-        loadingInterval = null;
         
         setTimeout(() => {
-          if (loadingScreen) loadingScreen.style.display = 'none';
-          if (app) app.style.display = 'block';
-        }, 200);
+          loadingScreen.style.display = 'none';
+          app.style.display = 'block';
+        }, 300);
       }
-    }, 60);
+    }, 80);
   }
   
   setInterval(() => { 
@@ -1698,15 +1681,14 @@
     renderLeaderboard();
     renderRegistrationTasksPage();
     
-    // FIXED: Start loading animation
     startLoadingAnimation();
     
-    let sitePopup = appConfig.sitePopup;
-    if (sitePopup && (sitePopup.title || sitePopup.description)) {
-      setTimeout(() => {
+    setTimeout(() => {
+      let sitePopup = appConfig.sitePopup;
+      if (sitePopup && (sitePopup.title || sitePopup.description)) {
         showPopup(sitePopup.title || 'Welcome', sitePopup.description || '', { showUser: false });
-      }, 500);
-    }
+      }
+    }, 9000);
   }
   
   window.startTaskPopup = startTaskPopup;
