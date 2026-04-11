@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -21,12 +21,12 @@
     body.dark-theme { background-color: #1B2631; color: #FDFEFE; --surface: #283747; --border: #566573; --shadow: 0 8px 20px rgba(0,0,0,0.2); }
     #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; display: none; overflow-x: hidden; }
     
-    /* ========== PREMIUM LOADING SCREEN (BLUR BACKGROUND) ========== */
+    /* ========== FIXED LOADING SCREEN ========== */
     #loadingScreen {
       position: fixed;
       width: 100%;
       height: 100%;
-      background: url('https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center/cover no-repeat;
+      background: url('https://i.postimg.cc/DzdZFny0/monetag-case-study-youtube-smartlink.png') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,7 +36,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
@@ -75,15 +75,8 @@
     @keyframes rotateColors {
       100% { transform: rotate(360deg); }
     }
-    .loading-text {
-      margin-top: 24px;
-      color: white;
-      font-size: 1.2rem;
-      font-weight: 600;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
     
-    /* ========== PREMIUM POPUP SYSTEM (SMALL BOX, CENTER) ========== */
+    /* ========== FIXED POPUP (z-index: 3000) ========== */
     .popup {
       position: fixed;
       top: 50%;
@@ -96,7 +89,7 @@
       padding: 24px 20px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      z-index: 9999;
+      z-index: 3000;
       border: 1px solid rgba(0,0,0,0.1);
       animation: popupFadeIn 0.3s ease;
     }
@@ -127,10 +120,6 @@
       line-height: 1.6;
       margin-bottom: 8px;
       white-space: pre-line;
-    }
-    .popup .highlight {
-      color: #E74C3C;
-      font-weight: 600;
     }
     .popup button {
       margin-top: 20px;
@@ -179,7 +168,6 @@
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
     
-    /* ========== AD SLOT GRID (4 FIXED CARDS) ========== */
     .ad-slot-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -211,9 +199,7 @@
       opacity: 0;
       transition: opacity 0.2s;
     }
-    .ad-slot-card.active::before {
-      opacity: 1;
-    }
+    .ad-slot-card.active::before { opacity: 1; }
     .ad-slot-card i {
       font-size: 2rem;
       margin-bottom: 8px;
@@ -222,14 +208,8 @@
       background-clip: text;
       color: transparent;
     }
-    .ad-slot-card h4 {
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-    }
-    .ad-slot-card p {
-      font-size: 0.7rem;
-      opacity: 0.7;
-    }
+    .ad-slot-card h4 { font-size: 0.9rem; margin-bottom: 4px; }
+    .ad-slot-card p { font-size: 0.7rem; opacity: 0.7; }
     .ad-slot-card .progress-mini {
       margin-top: 8px;
       height: 4px;
@@ -277,7 +257,6 @@
       font-size: 0.7rem; font-weight: 600;
     }
     
-    /* Web Task Card */
     .web-task-card {
       background: var(--surface);
       border-radius: 24px;
@@ -430,7 +409,6 @@
       100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
     }
     
-    /* ========== LEADERBOARD STYLES ========== */
     .leaderboard-top3 {
       display: flex;
       align-items: flex-end;
@@ -456,12 +434,8 @@
       height: 75px;
       border-color: #FFD700;
     }
-    .leaderboard-rank-2 .leaderboard-avatar {
-      border-color: #C0C0C0;
-    }
-    .leaderboard-rank-3 .leaderboard-avatar {
-      border-color: #CD7F32;
-    }
+    .leaderboard-rank-2 .leaderboard-avatar { border-color: #C0C0C0; }
+    .leaderboard-rank-3 .leaderboard-avatar { border-color: #CD7F32; }
     .leaderboard-rank-1 { order: 2; }
     .leaderboard-rank-2 { order: 1; }
     .leaderboard-rank-3 { order: 3; }
@@ -477,14 +451,9 @@
       color: #E74C3C;
       font-weight: 700;
     }
-    .crown-icon {
-      color: #FFD700;
-      margin-left: 4px;
-    }
+    .crown-icon { color: #FFD700; margin-left: 4px; }
     
-    .leaderboard-list {
-      margin-top: 20px;
-    }
+    .leaderboard-list { margin-top: 20px; }
     .leaderboard-list-item {
       display: flex;
       align-items: center;
@@ -506,9 +475,7 @@
       border-radius: 50%;
       object-fit: cover;
     }
-    .leaderboard-list-info {
-      flex: 1;
-    }
+    .leaderboard-list-info { flex: 1; }
     .leaderboard-list-name {
       font-weight: 600;
       font-size: 0.9rem;
@@ -552,7 +519,7 @@
 </head>
 <body>
 
-<!-- ========== PREMIUM LOADING SCREEN (BLUR BG + % 1-100) ========== -->
+<!-- FIXED LOADING SCREEN -->
 <div id="loadingScreen">
   <div class="loading-content">
     <div class="circle">
@@ -560,18 +527,17 @@
         <span id="percent">0%</span>
       </div>
     </div>
-    <div class="loading-text">Loading Earnify...</div>
   </div>
 </div>
 
-<!-- ========== PREMIUM POPUP SYSTEM (SMALL BOX, CENTER) ========== -->
+<!-- FIXED POPUP -->
 <div id="popupBox" class="popup hidden">
-  <h3 id="popupTitle">জরুরি নোটিশ</h3>
+  <h3 id="popupTitle">Notice</h3>
   <img id="popupUserPhoto" src="https://via.placeholder.com/60" style="display:none;">
   <p id="popupUserName"></p>
   <p id="popupMessage"></p>
   <div id="popupButtons">
-    <button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>
+    <button id="popupOkBtn" onclick="window.closePopup()">OK</button>
   </div>
 </div>
 
@@ -596,34 +562,27 @@
         <div><p><span id="earning-wallet-balance">0</span> Coins</p><button id="move-to-balance-btn" class="action-btn" style="padding:6px 14px;">Move</button></div>
       </div>
       
-      <!-- AD SLOT GRID (4 FIXED CARDS) -->
       <div class="ad-slot-grid" id="ad-slot-grid"></div>
-      
-      <!-- SELECTED AD CARD DETAIL -->
       <div id="premium-ad-card-container"></div>
-      
       <div id="daily-checkin-container"></div>
       <div id="pending-withdraw-banner-container"></div>
     </div>
     
-    <!-- WEB TASK PAGE -->
     <div id="web-task-page" class="page">
       <h3 style="margin-bottom:16px;"><i class="fas fa-globe" style="color:#E74C3C;"></i> Web Tasks</h3>
-      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">ওয়েব টাস্ক সম্পন্ন করে কয়েন অর্জন করুন!</p>
+      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">Complete web tasks to earn coins!</p>
       <div id="web-tasks-container"></div>
     </div>
     
-    <!-- LEADERBOARD PAGE -->
     <div id="leaderboard-page" class="page">
       <h3 style="margin-bottom:16px;"><i class="fas fa-trophy" style="color:#FFD700;"></i> Leaderboard</h3>
-      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">সবচেয়ে বেশি রেফারেল করা ইউজাররা</p>
+      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">Top users by referrals</p>
       <div id="leaderboard-container"></div>
     </div>
     
-    <!-- REGISTRATION TASK PAGE -->
     <div id="registration-task-page" class="page">
       <h3 style="margin-bottom:16px;"><i class="fas fa-clipboard-list" style="color:#E74C3C;"></i> Registration Tasks</h3>
-      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">রেজিস্ট্রেশন টাস্ক সম্পন্ন করে কয়েন অর্জন করুন!</p>
+      <p style="margin-bottom:16px; opacity:0.7; font-size:0.85rem;">Complete registration tasks to earn coins!</p>
       <div id="registration-tasks-container"></div>
     </div>
     
@@ -658,7 +617,7 @@
 
 <div id="wallet-modal" class="modal-overlay">
   <div class="modal-container">
-    <div class="modal-header"><h3>💰 Wallet</h3><span class="close-modal">&times;</span></div>
+    <div class="modal-header"><h3>Wallet</h3><span class="close-modal">&times;</span></div>
     <div id="wallet-modal-body"></div>
   </div>
 </div>
@@ -674,7 +633,6 @@
   let userState = {};
   let tgUser = {};
   
-  // Default Bot Username
   const DEFAULT_BOT_USERNAME = "video_group_link_bot";
   
   let adCounts = { monetag: 0, gigapub: 0, adsgram: 0, adexium: 0 };
@@ -683,22 +641,19 @@
   let adStartTime = {};
   let selectedAdPlatform = 'monetag';
   
-  // Web Task Timer System
   let taskStartTime = 0;
   let currentTask = null;
   let pendingTask = null;
   let popupTimeout = null;
   
-  // Registration Task System
-  let regTaskStartTime = 0;
-  let currentRegTask = null;
+  let loadingInterval = null;
+  let currentPercent = 0;
   
   function formatTime(sec){ let m = Math.floor(sec/60), s = sec%60; return `${m}:${s<10?'0':''}${s}`; }
   function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   function showModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'flex'; }
   function hideModal(id){ let el = document.getElementById(id); if(el) el.style.display = 'none'; }
   
-  // ========== PREMIUM POPUP SYSTEM (CENTER, SMALL BOX) ==========
   function showPopup(title, message, options = {}) {
     const popup = document.getElementById('popupBox');
     const titleEl = document.getElementById('popupTitle');
@@ -707,7 +662,7 @@
     const messageEl = document.getElementById('popupMessage');
     const buttonsDiv = document.getElementById('popupButtons');
     
-    titleEl.innerText = title || 'জরুরি নোটিশ';
+    titleEl.innerText = title || 'Notice';
     messageEl.innerText = message;
     
     const userName = `${userState.firstName || ''} ${userState.lastName || ''}`.trim() || 'User';
@@ -732,7 +687,7 @@
         buttonsDiv.appendChild(button);
       });
     } else {
-      buttonsDiv.innerHTML = '<button id="popupOkBtn" onclick="window.closePopup()">ঠিক আছে</button>';
+      buttonsDiv.innerHTML = '<button id="popupOkBtn" onclick="window.closePopup()">OK</button>';
     }
     
     popup.classList.remove('hidden');
@@ -792,17 +747,18 @@
     return null;
   }
 
-  let monetagLoaded = false, gigapubLoaded = false;
-  
+  // FIXED: Monetag only runs on Monetag
+  window.monetagInitialized = false;
   function initMonetag(zoneId) {
-    if(monetagLoaded) return;
+    if (window.monetagInitialized) return;
+    window.monetagInitialized = true;
+    
     let script = document.createElement("script");
     script.src = "https://libtl.com/sdk.js";
     script.async = true;
     script.setAttribute("data-zone", zoneId);
     script.setAttribute("data-sdk", `show_${zoneId}`);
     document.body.appendChild(script);
-    monetagLoaded = true;
   }
   
   async function runMonetagAd() {
@@ -816,8 +772,11 @@
     return false;
   }
   
+  // FIXED: Gigapub only runs on Gigapub
+  window.gigapubInitialized = false;
   async function runGigapubAd() {
-    if(!window.showGiga) {
+    if (!window.gigapubInitialized) {
+      window.gigapubInitialized = true;
       await new Promise((resolve) => {
         let script = document.createElement("script");
         script.src = "https://ad.gigapub.tech/script?id=6234";
@@ -825,13 +784,18 @@
         script.onerror = () => resolve();
         document.body.appendChild(script);
       });
-      for(let i = 0; i < 15; i++) { if(window.showGiga) break; await new Promise(r => setTimeout(r, 500)); }
+      for(let i = 0; i < 15; i++) { 
+        if(window.showGiga) break; 
+        await new Promise(r => setTimeout(r, 500)); 
+      }
     }
-    if(window.showGiga) { await window.showGiga(); return true; }
+    if(window.showGiga) { 
+      await window.showGiga(); 
+      return true; 
+    }
     return false;
   }
   
-  // ========== RENDER 4 AD SLOT CARDS ==========
   function renderAdSlotGrid() {
     const container = document.getElementById('ad-slot-grid');
     const adSettings = appConfig.adSettings || {};
@@ -902,11 +866,11 @@
     const isBreakActive = adCount >= config.breakAfter && Date.now() < breakEnd;
     const maxAdsReached = config.maxAds > 0 && adCount >= config.maxAds;
     
-    let buttonText = '▶ Watch Ad';
+    let buttonText = 'Watch Ad';
     let buttonDisabled = watched >= limit || adLocks[selectedAdPlatform] || isBreakActive || maxAdsReached;
-    if (watched >= limit) buttonText = '✅ Daily Limit Reached';
-    else if (maxAdsReached) buttonText = `✅ ${config.maxAds} Ads Completed`;
-    else if (isBreakActive) buttonText = `⏳ Wait ${formatTime(Math.ceil((breakEnd - Date.now())/1000))}`;
+    if (watched >= limit) buttonText = 'Daily Limit Reached';
+    else if (maxAdsReached) buttonText = `${config.maxAds} Ads Completed`;
+    else if (isBreakActive) buttonText = `Wait ${formatTime(Math.ceil((breakEnd - Date.now())/1000))}`;
     
     let html = `<div class="premium-ad-card">
         ${config.maxAds > 0 ? `<div class="ad-counter-badge">${adCount}/${config.maxAds} Ads</div>` : ''}
@@ -914,7 +878,7 @@
         <div class="ad-reward-badge"><i class="fas fa-coins"></i> +${config.reward} Coins per ad</div>
         <button class="ad-watch-btn" id="watch-ad-btn" ${buttonDisabled ? 'disabled' : ''}>${buttonText}</button>
         <div class="ad-progress-bar"><div class="ad-progress-fill" style="width:${progress}%;"></div></div>
-        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.75rem; opacity:0.7;"><span>📊 ${watched}/${limit} watched</span><span>🎯 Daily Limit</span></div>
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.75rem; opacity:0.7;"><span>${watched}/${limit} watched</span><span>Daily Limit</span></div>
         ${isBreakActive ? `<div style="text-align:center; margin-top:12px; font-size:0.85rem; font-weight:600; color:#E74C3C;"><i class="fas fa-hourglass-half"></i> Break: ${formatTime(Math.ceil((breakEnd - Date.now())/1000))}</div>` : ''}
       </div>`;
     container.innerHTML = html;
@@ -925,7 +889,7 @@
   
   async function handleAdWatch(platform) {
     if (adLocks[platform]) { 
-      showPopup('⏳ অপেক্ষা করুন', 'অনুগ্রহ করে অপেক্ষা করুন, অ্যাড প্রসেস হচ্ছে...');
+      showPopup('Please Wait', 'Ad is processing...');
       return; 
     }
     
@@ -940,25 +904,38 @@
     const adCount = adCounts[platform] || 0;
     
     if (watched >= config.dailyLimit) { 
-      showPopup('❌ লিমিট শেষ', 'আজকের অ্যাড লিমিট শেষ হয়ে গেছে।');
+      showPopup('Limit Reached', 'Daily ad limit reached.');
       return; 
     }
     
     if (config.maxAds > 0 && adCount >= config.maxAds) {
-      showPopup('❌ লিমিট শেষ', `আপনি ${config.maxAds} টি অ্যাড দেখেছেন।`);
+      showPopup('Limit Reached', `You have watched ${config.maxAds} ads.`);
       return;
     }
     
     adLocks[platform] = true;
     adStartTime[platform] = Date.now();
     
-    // Run appropriate ad based on platform
     let success = false;
     try {
       if (platform === 'monetag') success = await runMonetagAd();
       else if (platform === 'gigapub') success = await runGigapubAd();
-      else { success = true; }
+      else { 
+        // FIXED: No fake reward for Adsgram/Adexium
+        adLocks[platform] = false;
+        renderPremiumAdCard();
+        showPopup('Not Available', 'This ad platform is not available yet.');
+        return; 
+      }
     } catch(e) { console.warn(e); }
+    
+    // FIXED: Check if user left the page during ad
+    if (document.hidden) {
+      adLocks[platform] = false;
+      renderPremiumAdCard();
+      showPopup('Cheat Detected', 'Please stay on the ad page.');
+      return;
+    }
     
     const timeSpent = (Date.now() - adStartTime[platform]) / 1000;
     
@@ -988,12 +965,12 @@
       await addHistory('Watch Ad', `Watched ${platform} Ad`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, `${platform} Ad`);
       await sendAdminNotification(`📺 ${platform} Ad Watched\nUser: ${userState.firstName}\nReward: ${reward} Coins`);
-      showPopup('✅ সফল!', `+${reward} কয়েন অর্জন করেছেন!`);
+      showPopup('Success!', `+${reward} Coins earned!`);
     } else {
       if (timeSpent < config.taskTime) {
-        showPopup('❌ ব্যর্থ', `আপনি ${config.taskTime} সেকেন্ড অপেক্ষা করেননি।\nআপনি ছিলেন: ${Math.floor(timeSpent)} সেকেন্ড`);
+        showPopup('Failed', `You did not wait ${config.taskTime} seconds.\nTime spent: ${Math.floor(timeSpent)} seconds`);
       } else {
-        showPopup('❌ ব্যর্থ', 'অ্যাড লোড করা যায়নি।');
+        showPopup('Failed', 'Ad could not be loaded.');
       }
     }
     
@@ -1003,7 +980,6 @@
     renderPremiumAdCard();
   }
 
-  // ========== WEB TASK SYSTEM ==========
   async function loadWebTasks() {
     let snap = await db.ref('config/bonusTasks').once('value');
     let tasksData = snap.val() || {};
@@ -1015,12 +991,12 @@
   function startTaskPopup(task) {
     pendingTask = task;
     
-    const message = `আপনি OK ক্লিক করলে টাইমার শুরু হবে\n\n📋 ${task.name}\n⏱️ সময়: ${task.taskTime || 30} সেকেন্ড\n💰 ${task.reward} কয়েন\n\n⚠️ ${task.taskTime || 30} সেকেন্ডের আগে ফিরে এলে কোনো কয়েন পাবেন না।`;
+    const message = `Click OK to start timer\n\n${task.name}\nTime: ${task.taskTime || 30} seconds\nReward: ${task.reward} Coins\n\nYou must stay for full time.`;
     
-    showPopup('⏰ টাইমার শুরু', message, {
+    showPopup('Start Task', message, {
       buttons: [
-        { text: '✅ OK, শুরু করুন', onClick: () => { closePopup(); confirmStartTask(); } },
-        { text: '❌ বাতিল', onClick: () => { closePopup(); pendingTask = null; }, className: 'btn-secondary' }
+        { text: 'OK, Start', onClick: () => { closePopup(); confirmStartTask(); } },
+        { text: 'Cancel', onClick: () => { closePopup(); pendingTask = null; }, className: 'btn-secondary' }
       ]
     });
   }
@@ -1032,9 +1008,14 @@
     }
   }
   
+  // FIXED: Web task with localStorage security
   function startTask(task) {
     taskStartTime = Date.now();
     currentTask = task;
+    
+    localStorage.setItem('taskStartTime', taskStartTime);
+    localStorage.setItem('currentTaskKey', task.key);
+    localStorage.setItem('currentTaskTime', task.taskTime || 30);
     
     db.ref(`users/${tgUser.id}/bonusTaskTimers/${task.key}`).set({
       startTime: taskStartTime,
@@ -1050,14 +1031,29 @@
     renderWebTasksPage();
   }
   
+  // FIXED: Check task completion with localStorage
   function checkTaskCompletion() {
     if (!currentTask) return false;
     
-    let spent = Math.floor((Date.now() - taskStartTime) / 1000);
+    const savedStartTime = localStorage.getItem('taskStartTime');
+    const savedTaskKey = localStorage.getItem('currentTaskKey');
+    
+    if (!savedStartTime || savedTaskKey !== currentTask.key) {
+      showPopup('Error', 'Invalid task session.');
+      return false;
+    }
+    
+    const startTime = parseInt(savedStartTime);
+    const now = Date.now();
+    const spent = Math.floor((now - startTime) / 1000);
     const requiredTime = currentTask.taskTime || 30;
     
     if (spent < requiredTime) {
-      showPopup('❌ টাস্ক অসম্পূর্ণ', `আপনি নির্ধারিত সময়ের আগে বের হয়েছেন\nতাই কোনো কয়েন পাবেন না\n\nনির্ধারিত সময়: ${requiredTime} সেকেন্ড\nআপনি ছিলেন: ${spent} সেকেন্ড`);
+      showPopup('Task Incomplete', `You left before completing the time.\n\nRequired: ${requiredTime} seconds\nYou stayed: ${spent} seconds`);
+      
+      localStorage.removeItem('taskStartTime');
+      localStorage.removeItem('currentTaskKey');
+      localStorage.removeItem('currentTaskTime');
       
       db.ref(`users/${tgUser.id}/bonusTaskTimers/${currentTask.key}`).remove();
       currentTask = null;
@@ -1065,6 +1061,10 @@
       renderWebTasksPage();
       return false;
     }
+    
+    localStorage.removeItem('taskStartTime');
+    localStorage.removeItem('currentTaskKey');
+    localStorage.removeItem('currentTaskTime');
     
     showSuccessPopup(currentTask);
     return true;
@@ -1074,7 +1074,7 @@
     let countdown = 5;
     
     const updatePopup = () => {
-      showPopup('✅ টাস্ক সম্পূর্ণ!', `আপনি সফল ভাবে টাস্ক সম্পূর্ণ করেছেন\n\n💰 পুরস্কার: ${task.reward} কয়েন\n⏱️ সময়: ${task.taskTime || 30} সেকেন্ড\n\n${countdown} সেকেন্ড পরে কয়েন পাবেন`, {
+      showPopup('Task Complete!', `Task completed successfully!\n\nReward: ${task.reward} Coins\nTime: ${task.taskTime || 30} seconds\n\nCoins in ${countdown} seconds`, {
         buttons: [],
         autoClose: false
       });
@@ -1121,7 +1121,7 @@
     await processReferralEarnings(tgUser.id, task.reward, 'Web Task');
     await sendAdminNotification(`✅ Web Task Completed\nUser: ${userState.firstName}\nTask: ${task.name}\nReward: ${task.reward} Coins`);
     
-    showPopup('🎉 অভিনন্দন!', `আপনি ${task.reward} কয়েন পেয়েছেন!`);
+    showPopup('Congratulations!', `You earned ${task.reward} Coins!`);
     
     currentTask = null;
     taskStartTime = 0;
@@ -1153,7 +1153,7 @@
     if (!container) return;
     
     if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো ওয়েব টাস্ক নেই।</p>';
+      container.innerHTML = '<p style="text-align:center; padding:30px;">No web tasks available.</p>';
       return;
     }
     
@@ -1181,15 +1181,15 @@
       let buttonAction = '';
       
       if (isGloballyLimited) { 
-        buttonHtml = '🔒 গ্লোবাল লিমিট শেষ'; 
+        buttonHtml = 'Global Limit Reached'; 
         buttonDisabled = true; 
       }
       else if (isUserLimited) { 
-        buttonHtml = `✅ লিমিট শেষ (${userCompletionsCount}/${task.userLimit})`; 
+        buttonHtml = `Limit Reached (${userCompletionsCount}/${task.userLimit})`; 
         buttonDisabled = true; 
       }
       else if (isCompleted) { 
-        buttonHtml = '✅ সম্পন্ন হয়েছে'; 
+        buttonHtml = 'Completed'; 
         buttonDisabled = true; 
       }
       else if (timer && timer.startTime) {
@@ -1198,16 +1198,16 @@
         let requiredSeconds = task.taskTime || timer.taskTime || 30;
         
         if (elapsed >= taskTime) {
-          buttonHtml = `🎁 ${task.reward} কয়েন সংগ্রহ করুন`;
+          buttonHtml = `Claim ${task.reward} Coins`;
           buttonDisabled = false;
           buttonAction = `window.checkTaskCompletion()`;
         } else {
           let timeSpent = Math.floor(elapsed / 1000);
-          buttonHtml = `⏳ ${timeSpent}/${requiredSeconds}s - অপেক্ষা করুন`;
+          buttonHtml = `${timeSpent}/${requiredSeconds}s - Waiting`;
           buttonDisabled = true;
         }
       } else {
-        buttonHtml = `▶ টাস্ক শুরু করুন`;
+        buttonHtml = `Start Task`;
         buttonDisabled = false;
       }
       
@@ -1217,13 +1217,13 @@
             <img src="${task.photoUrl || 'https://via.placeholder.com/60'}" onerror="this.src='https://via.placeholder.com/60'">
             <div class="web-task-title">
               <h3>${escapeHtml(task.name)}</h3>
-              <p>${escapeHtml(task.description || task.title || 'টাস্ক সম্পন্ন করে কয়েন অর্জন করুন')}</p>
+              <p>${escapeHtml(task.description || task.title || 'Complete task to earn coins')}</p>
             </div>
           </div>
-          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
+          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} Coins</div>
           <div class="web-task-stats">
-            <span><i class="fas fa-user"></i> আপনার: ${userCompletionsCount}/${task.userLimit || 1}</span>
-            <span><i class="fas fa-globe"></i> গ্লোবাল: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
+            <span><i class="fas fa-user"></i> You: ${userCompletionsCount}/${task.userLimit || 1}</span>
+            <span><i class="fas fa-globe"></i> Global: ${task.completions || 0}/${task.globalLimit || '∞'}</span>
             <span><i class="fas fa-clock"></i> ${task.taskTime || 30}s</span>
           </div>
           <button class="web-task-btn" 
@@ -1237,15 +1237,16 @@
     container.innerHTML = html;
   }
 
-  // ========== LEADERBOARD ==========
+  // FIXED: Leaderboard only fetches top 10
   async function renderLeaderboard() {
     const container = document.getElementById('leaderboard-container');
     if (!container) return;
     
     container.innerHTML = '<p style="text-align:center; padding:20px;">Loading leaderboard...</p>';
     
-    const usersSnap = await db.ref('users').once('value');
+    const usersSnap = await db.ref('users').orderByChild('referrals').limitToLast(10).once('value');
     const users = [];
+    
     usersSnap.forEach(u => {
       const data = u.val();
       if (!data.blocked) {
@@ -1258,7 +1259,7 @@
       }
     });
     
-    users.sort((a, b) => b.referrals - a.referrals);
+    users.reverse();
     
     if (users.length === 0) {
       container.innerHTML = '<p style="text-align:center; padding:30px;">No users yet</p>';
@@ -1267,11 +1268,9 @@
     
     let html = '';
     
-    // Top 3
     if (users.length >= 3) {
       html += `<div class="leaderboard-top3">`;
       
-      // 2nd place (left)
       html += `
         <div class="leaderboard-item leaderboard-rank-2">
           <img src="${users[1].photoUrl}" class="leaderboard-avatar" onerror="this.src='https://via.placeholder.com/60'">
@@ -1280,7 +1279,6 @@
         </div>
       `;
       
-      // 1st place (center)
       html += `
         <div class="leaderboard-item leaderboard-rank-1">
           <img src="${users[0].photoUrl}" class="leaderboard-avatar" onerror="this.src='https://via.placeholder.com/60'">
@@ -1289,7 +1287,6 @@
         </div>
       `;
       
-      // 3rd place (right)
       html += `
         <div class="leaderboard-item leaderboard-rank-3">
           <img src="${users[2].photoUrl}" class="leaderboard-avatar" onerror="this.src='https://via.placeholder.com/60'">
@@ -1301,7 +1298,6 @@
       html += `</div>`;
     }
     
-    // Top 10 list
     html += `<div class="leaderboard-list">`;
     users.slice(0, 10).forEach((user, idx) => {
       html += `
@@ -1321,7 +1317,6 @@
     container.innerHTML = html;
   }
 
-  // ========== REGISTRATION TASK SYSTEM ==========
   async function loadRegistrationTasks() {
     let snap = await db.ref('config/registrationTasks').once('value');
     let tasksData = snap.val() || {};
@@ -1339,7 +1334,7 @@
     const userRegStatus = userRegTaskSnap.val() || {};
     
     if (tasks.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:30px;">কোনো রেজিস্ট্রেশন টাস্ক নেই।</p>';
+      container.innerHTML = '<p style="text-align:center; padding:30px;">No registration tasks available.</p>';
       return;
     }
     
@@ -1356,16 +1351,16 @@
       let buttonDisabled = false;
       
       if (isCompleted) {
-        buttonHtml = '✅ সম্পন্ন হয়েছে';
+        buttonHtml = 'Completed';
         buttonDisabled = true;
       } else if (isPending) {
-        buttonHtml = '⏳ রিভিউ পেন্ডিং';
+        buttonHtml = 'Pending Review';
         buttonDisabled = true;
       } else if (isRejected) {
-        buttonHtml = '❌ রিজেক্ট হয়েছে';
+        buttonHtml = 'Rejected';
         buttonDisabled = true;
       } else {
-        buttonHtml = '📝 সাবমিট করুন';
+        buttonHtml = 'Submit';
         buttonDisabled = false;
       }
       
@@ -1375,10 +1370,10 @@
             <img src="${task.photoUrl || 'https://via.placeholder.com/60'}" onerror="this.src='https://via.placeholder.com/60'">
             <div class="web-task-title">
               <h3>${escapeHtml(task.name)}</h3>
-              <p>${escapeHtml(task.description || 'রেজিস্ট্রেশন করে স্ক্রিনশট সাবমিট করুন')}</p>
+              <p>${escapeHtml(task.description || 'Register and submit screenshot')}</p>
             </div>
           </div>
-          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} কয়েন</div>
+          <div class="web-task-reward-badge"><i class="fas fa-coins"></i> +${task.reward} Coins</div>
           <div class="web-task-stats">
             <span><i class="fas fa-link"></i> ${task.link ? '<a href="#" onclick="window.open(\'' + task.link + '\', \'_blank\')">Open Link</a>' : 'No link'}</span>
           </div>
@@ -1396,19 +1391,19 @@
   }
   
   window.openRegTaskSubmit = (taskKey, task) => {
-    showPopup('📋 সাবমিট টাস্ক', `${task.name}\n\nআপনার স্ক্রিনশট লিংক দিন:`, {
+    showPopup('Submit Task', `${task.name}\n\nEnter screenshot link:`, {
       buttons: [
         { 
-          text: 'সাবমিট', 
+          text: 'Submit', 
           onClick: () => {
-            const link = prompt('স্ক্রিনশট লিংক পেস্ট করুন:');
+            const link = prompt('Paste screenshot link:');
             if (link) {
               submitRegistrationTask(taskKey, task, link);
             }
             closePopup();
           }
         },
-        { text: 'বাতিল', onClick: () => closePopup(), className: 'btn-secondary' }
+        { text: 'Cancel', onClick: () => closePopup(), className: 'btn-secondary' }
       ]
     });
   };
@@ -1433,7 +1428,7 @@
     
     await sendAdminNotification(`📋 New Registration Task\nUser: ${userState.firstName}\nTask: ${task.name}\nScreenshot: ${screenshotLink}`);
     
-    showPopup('✅ সাবমিট হয়েছে', 'আপনার সাবমিশন রিভিউ করা হবে।');
+    showPopup('Submitted', 'Your submission is under review.');
     renderRegistrationTasksPage();
   }
 
@@ -1468,7 +1463,7 @@
     
     let streak = (userState.checkInStreak || 0) + 1;
     let reward = appConfig.dailyCheckinReward || 50;
-    container.innerHTML = `<div class="daily-checkin-card"><div><h3>Day ${streak} Check-in</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">🎁 Claim ${reward} Coins</button></div>`;
+    container.innerHTML = `<div class="daily-checkin-card"><div><h3>Day ${streak} Check-in</h3><p>${today}</p></div><button id="start-checkin-btn" class="action-btn">Claim ${reward} Coins</button></div>`;
     
     document.getElementById('start-checkin-btn').onclick = async () => {
       userState.lastCheckInDate = today; userState.checkInStreak = streak;
@@ -1477,12 +1472,12 @@
       await db.ref(`users/${tgUser.id}`).update({ lastCheckInDate: today, checkInStreak: streak, earningWallet: userState.earningWallet, totalEarned: userState.totalEarned });
       await addHistory('Daily Check-in', `Day ${streak} Reward`, reward, 'Completed');
       await processReferralEarnings(tgUser.id, reward, 'Daily Check-in');
-      showPopup('✅ চেক-ইন সফল!', `+${reward} কয়েন যোগ হয়েছে!`);
+      showPopup('Check-in Successful!', `+${reward} Coins added!`);
       renderAll();
     };
   }
   
-  // ========== REFERRAL SYSTEM (FIXED) ==========
+  // FIXED: Referral link
   function getRefLink(userId) {
     const botUsername = appConfig.botUsername || DEFAULT_BOT_USERNAME;
     return `https://t.me/${botUsername}?start=${userId}`;
@@ -1490,7 +1485,7 @@
   
   function copyRef(link) {
     navigator.clipboard.writeText(link);
-    showPopup('✅ কপি হয়েছে', 'রেফারেল লিংক কপি করা হয়েছে!');
+    showPopup('Copied!', 'Referral link copied!');
   }
   
   function renderReferralSection() {
@@ -1514,11 +1509,11 @@
     }
   }
   
+  // FIXED: Real-time withdraw history updates
   async function renderPendingWithdrawBanner() {
     let container = document.getElementById('pending-withdraw-banner-container');
     if (!container) return;
     
-    // Real-time listener for withdrawals
     db.ref('withdrawals/pending').orderByChild('userId').equalTo(tgUser.id).on('value', (snap) => {
       let pending = [];
       snap.forEach(p => pending.push(p.val()));
@@ -1544,19 +1539,18 @@
       `;
     });
     
-    // Also listen for completed/rejected to update user balance in real-time
-    db.ref('withdrawals/completed').orderByChild('userId').equalTo(tgUser.id).on('child_added', async (snap) => {
-      // Refresh user data when withdrawal is completed
-      const userSnap = await db.ref(`users/${tgUser.id}`).once('value');
-      userState = userSnap.val();
-      renderAll();
+    db.ref(`users/${tgUser.id}/balance`).on('value', (snap) => {
+      const newBalance = snap.val() || 0;
+      userState.balance = newBalance;
+      document.getElementById('main-balance').innerText = newBalance.toFixed(0);
+      document.getElementById('profile-balance').innerText = newBalance.toFixed(0);
     });
   }
   
   async function moveToBalance() {
     let min = appConfig.minWithdrawBalance || 100;
     if ((userState.earningWallet || 0) < min) { 
-      showPopup('❌ অপর্যাপ্ত ব্যালেন্স', `সর্বনিম্ন ${min} কয়েন প্রয়োজন।`);
+      showPopup('Insufficient Balance', `Minimum ${min} coins required.`);
       return; 
     }
     let amount = userState.earningWallet;
@@ -1566,7 +1560,7 @@
     userState.earningWallet = 0;
     await addHistory('Move to Balance', 'Moved from earning wallet', amount, 'Completed');
     renderAll();
-    showPopup('✅ স্থানান্তর সফল!', `${amount} কয়েন মেইন ব্যালেন্সে স্থানান্তরিত হয়েছে!`);
+    showPopup('Success!', `${amount} Coins moved to main balance!`);
   }
   
   async function loadUserData() {
@@ -1620,13 +1614,57 @@
     let snap = await db.ref(`deviceLock/${deviceId}`).once('value');
     if (snap.val() && snap.val() !== uid) {
       document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>ডিভাইস লক</h3><p>আপনার ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।</p></div>`;
+      document.getElementById('app').innerHTML = `<div class="device-blocked-message"><i class="fas fa-exclamation-triangle"></i><h3>Device Locked</h3><p>This device already has an account.</p></div>`;
       throw new Error("Device locked");
     }
     if (!snap.val()) await db.ref(`deviceLock/${deviceId}`).set(uid);
   }
   
-  // Update UI every second
+  // FIXED: Loading animation
+  function startLoadingAnimation() {
+    const percentEl = document.getElementById('percent');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const app = document.getElementById('app');
+    
+    if (!percentEl || !loadingScreen || !app) return;
+    
+    currentPercent = 0;
+    
+    if (loadingInterval) clearInterval(loadingInterval);
+    
+    loadingInterval = setInterval(() => {
+      currentPercent++;
+      
+      if (percentEl) {
+        percentEl.innerText = currentPercent + '%';
+      }
+      
+      let nextInterval = 60;
+      
+      if (currentPercent > 80) {
+        nextInterval = 100;
+      }
+      if (currentPercent > 95) {
+        nextInterval = 150;
+      }
+      
+      if (loadingInterval) {
+        clearInterval(loadingInterval);
+        loadingInterval = setInterval(arguments.callee, nextInterval);
+      }
+      
+      if (currentPercent >= 100) {
+        clearInterval(loadingInterval);
+        loadingInterval = null;
+        
+        setTimeout(() => {
+          if (loadingScreen) loadingScreen.style.display = 'none';
+          if (app) app.style.display = 'block';
+        }, 200);
+      }
+    }, 60);
+  }
+  
   setInterval(() => { 
     renderPremiumAdCard(); 
     renderAdSlotGrid();
@@ -1660,37 +1698,22 @@
     renderLeaderboard();
     renderRegistrationTasksPage();
     
-    // Premium Loading Animation (1-100%) with blur background
-    let p = 0;
-    const percentEl = document.getElementById('percent');
-    const loadingScreen = document.getElementById('loadingScreen');
-    
-    const loadInterval = setInterval(() => {
-      p++;
-      percentEl.innerText = p + '%';
-      
-      if (p >= 100) {
-        clearInterval(loadInterval);
-        loadingScreen.style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-      }
-    }, 100); // 10 seconds total
+    // FIXED: Start loading animation
+    startLoadingAnimation();
     
     let sitePopup = appConfig.sitePopup;
     if (sitePopup && (sitePopup.title || sitePopup.description)) {
       setTimeout(() => {
-        showPopup(sitePopup.title || 'স্বাগতম', sitePopup.description || '', { showUser: false });
+        showPopup(sitePopup.title || 'Welcome', sitePopup.description || '', { showUser: false });
       }, 500);
     }
   }
   
-  // Global functions
   window.startTaskPopup = startTaskPopup;
   window.checkTaskCompletion = checkTaskCompletion;
   window.closePopup = closePopup;
   window.openRegTaskSubmit = openRegTaskSubmit;
   
-  // Navigation
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       let pageId = btn.dataset.page;
@@ -1738,12 +1761,12 @@
   async function startWithdraw(type) {
     let minRef = appConfig.withdrawReferralLimit || 0;
     if ((userState.referrals || 0) < minRef) { 
-      showPopup('❌ অপর্যাপ্ত রেফারেল', `উইথড্র করতে সর্বনিম্ন ${minRef} রেফারেল প্রয়োজন।`);
+      showPopup('Insufficient Referrals', `Minimum ${minRef} referrals required.`);
       return; 
     }
     let methods = type === 'bdt' ? (appConfig.withdrawBDTMethods || []) : (appConfig.withdrawUSDTMethods || []);
     if (!methods.length) { 
-      showPopup('❌ মেথড নেই', 'কোনো উইথড্র মেথড নেই');
+      showPopup('No Methods', 'No withdrawal methods available.');
       return; 
     }
     
@@ -1773,11 +1796,11 @@
         document.getElementById('confirmW').addEventListener('click', async () => {
           let account = document.getElementById('acc').value.trim(), coinAmount = parseFloat(coinsInp.value);
           if (!account || isNaN(coinAmount) || coinAmount < (method.min || 0)) { 
-            showPopup('❌ ইনপুট ত্রুটি', `সর্বনিম্ন ${method.min || 0} কয়েন প্রয়োজন`);
+            showPopup('Input Error', `Minimum ${method.min || 0} coins required.`);
             return; 
           }
           if (coinAmount > userState.balance) { 
-            showPopup('❌ অপর্যাপ্ত ব্যালেন্স', 'পর্যাপ্ত ব্যালেন্স নেই');
+            showPopup('Insufficient Balance', 'Not enough balance.');
             return; 
           }
           
@@ -1792,7 +1815,7 @@
           });
           await addHistory('Withdrawal Request', `${method.name}`, -coinAmount, 'Pending');
           await sendAdminNotification(`💰 Withdrawal Request\nUser: ${userState.firstName}\nAmount: ${coinAmount} Coins\nMethod: ${method.name}`);
-          showPopup('✅ সাবমিট হয়েছে', 'উইথড্র রিকোয়েস্ট সাবমিট হয়েছে!');
+          showPopup('Submitted', 'Withdrawal request submitted!');
           hideModal('withdraw-flow-modal'); hideModal('wallet-modal');
           renderAll(); renderPendingWithdrawBanner();
         });
@@ -1812,7 +1835,7 @@
     rejectedSnap.forEach(r => items.push({ ...r.val(), status: 'Rejected' }));
     items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     
-    let html = `<div class="modal-header"><h3>📋 Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
+    let html = `<div class="modal-header"><h3>Withdraw History</h3><span class="close-modal">&times;</span></div><div style="max-height:70vh; overflow-y:auto;">`;
     if (!items.length) html += "<p style='text-align:center; padding:40px;'>No withdrawal history</p>";
     items.forEach(req => {
       let date = new Date(req.timestamp).toLocaleString(), statusClass = req.status.toLowerCase();
@@ -1820,10 +1843,10 @@
       let fiatAmount = (req.amount * rate).toFixed(2), currency = req.type === 'bdt' ? 'BDT' : 'USDT';
       html += `<div class="history-item-premium ${statusClass}">
         <div style="display:flex; justify-content:space-between;"><strong>${escapeHtml(req.method)}</strong><span style="font-weight:700;">${req.amount} Coins</span></div>
-        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>💵 ${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
+        <div style="display:flex; justify-content:space-between; margin:8px 0;"><span>${fiatAmount} ${currency}</span><span class="status-badge ${statusClass}">${req.status}</span></div>
         <small>${date}</small>
-        ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">❌ ${escapeHtml(req.rejectReason)}</p>` : ''}
-        ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">🏦 ${escapeHtml(req.account)}</p>` : ''}
+        ${req.status === 'Rejected' && req.rejectReason ? `<p style="color:#EF4444; margin-top:8px;">Reason: ${escapeHtml(req.rejectReason)}</p>` : ''}
+        ${req.account ? `<p style="font-size:0.75rem; opacity:0.7; margin-top:5px;">Account: ${escapeHtml(req.account)}</p>` : ''}
       </div>`;
     });
     html += `</div>`;
